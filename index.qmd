@@ -1,0 +1,13 @@
+---
+title: "Alexa Gamble"
+image: "images/image.JPEG"
+about: 
+    template: jolla
+    links:
+        - icon: envelope
+          href: mailto:agamble@ucsd.edu
+        - icon: linkedin
+          href: https://www.linkedin.com/in/alexa-gamble-9723b0221
+---
+
+Here is a paragraph about me!
