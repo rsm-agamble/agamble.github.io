@@ -1,3 +1,8 @@
+# This is Project 3
+
+## Section 1: Data
+Marketing Analytics HW1
+
 ---
 title: "A Replication of Karlan and List (2007)"
 author: "Alexa Gamble"
