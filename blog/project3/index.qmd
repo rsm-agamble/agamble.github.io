@@ -120,6 +120,14 @@ As an ad hoc test of the randomization mechanism, I provide a series of tests th
 
 _todo: test a few variables other than the key outcome variables (for example, test months since last donation) to see if the treatment and control groups are statistically significantly different at the 95% confidence level. Do each as a t-test and separately as a linear regression, and confirm you get the exact same results from both methods. When doing a t-test, use the formula in the class slides. When doing the linear regression, regress for example mrm2 on treatment and look at the estimated coefficient on the treatment variable. It might be helpful to compare parts of your analysis to Table 1 in the paper. Be sure to comment on your results (hint: why is Table 1 included in the paper)._
 
+To assess whether the random assignment mechanism was successful, I conduct balance tests on three baseline variables that are not influenced by treatment:
+
+- `mrm2`: months since last donation  
+- `pwhite`: proportion of white residents in the donor’s area  
+- `ave_hh_sz`: average household size
+
+For each variable, I apply both a **manual t-test** (based on the formula from lecture) and a **linear regression** to compare treatment and control groups. These methods should yield consistent results, since both estimate the same underlying difference in means.
+
 ```{python}
 
 # Function to compute manual t-test and regression for a given variable
@@ -160,16 +168,6 @@ balance_test(df_k, "pwhite")
 balance_test(df_k, "ave_hh_sz")
 ```
 
-
-To assess whether the random assignment mechanism was successful, I conduct balance tests on three baseline variables that are not influenced by treatment:
-
-- `mrm2`: months since last donation  
-- `pwhite`: proportion of white residents in the donor’s area  
-- `ave_hh_sz`: average household size
-
-For each variable, I apply both a **manual t-test** (based on the formula from lecture) and a **linear regression** to compare treatment and control groups. These methods should yield consistent results, since both estimate the same underlying difference in means.
-
----
 
 #### `mrm2` (Months Since Last Donation)
 
