@@ -1,4 +1,4 @@
-# This is Project 1 / HW 1
+# HW 1
 
 ---
 title: "A Replication of Karlan and List (2007)"
@@ -246,6 +246,83 @@ plt.show()
 
 _todo: run a t-test between the treatment and control groups on the binary outcome of whether any charitable donation was made. Also run a bivariate linear regression that demonstrates the same finding. (It may help to confirm your calculations match Table 2a Panel A.) Report your statistical results and interpret them in the context of the experiment (e.g., if you found a difference with a small p-value or that was statistically significant at some threshold, what have you learned about human behavior? Use mostly English words, not numbers or stats, to explain your finding.)_
 
+```{python}
+import numpy as np
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+from scipy import stats
+
+# Ensure 'gave' column is defined (1 if donated, 0 if not)
+df_k['gave'] = (df_k['amount'] > 0).astype(int)
+
+# Split by group
+gave_treat = df_k[df_k['treatment'] == 1]['gave']
+gave_control = df_k[df_k['treatment'] == 0]['gave']
+
+# --- Manual t-test (Welch's t-test) ---
+mean_treat = gave_treat.mean()
+mean_control = gave_control.mean()
+var_treat = gave_treat.var(ddof=1)
+var_control = gave_control.var(ddof=1)
+n_treat = len(gave_treat)
+n_control = len(gave_control)
+
+# Standard error
+se = np.sqrt(var_treat/n_treat + var_control/n_control)
+t_stat = (mean_treat - mean_control) / se
+
+# Degrees of freedom (Welch’s formula)
+df_num = (var_treat/n_treat + var_control/n_control)**2
+df_denom = ((var_treat/n_treat)**2 / (n_treat - 1)) + ((var_control/n_control)**2 / (n_control - 1))
+df_eff = df_num / df_denom
+
+# p-value
+p_val = 2 * (1 - stats.t.cdf(abs(t_stat), df=df_eff))
+
+print(f"T-test result: t = {t_stat:.4f}, df ≈ {df_eff:.0f}, p = {p_val:.4f}")
+
+# --- Linear regression: gave ~ treatment ---
+model = smf.ols("gave ~ treatment", data=df_k).fit()
+print(model.summary())
+```
+
+### Response Rate Analysis
+
+To test whether offering a matching donation influenced charitable behavior, I examined the **response rate** — the proportion of individuals who made any donation — across treatment and control groups.
+
+#### Statistical Results
+
+Using a **t-test**, I found a statistically significant difference in donation rates:
+
+- **t = 3.21**, degrees of freedom ≈ 36,577  
+- **p = 0.0013**
+
+I also ran a **bivariate linear regression**:
+
+- `gave ~ treatment`  
+- Coefficient on `treatment`: **0.0042**,  
+- Standard error: **0.0014**  
+- **p = 0.002**
+
+This confirms that individuals in the treatment group were significantly more likely to donate than those in the control group.
+
+#### Context and Interpretation
+
+The estimated treatment effect is about **0.42 percentage points** - small in absolute terms, but statistically meaningful. This suggests that **framing a donation opportunity with a matching offer** leads to an increased likelihood that someone contributes, even if the match amount or ratio isn't overwhelming.
+
+In other words, **people are more responsive to the idea that their donation will be matched**, likely because it enhances their perceived impact or makes the opportunity feel more urgent or meaningful.
+
+#### Comparison to Table 2A
+
+These results align closely with the findings reported in **Table 2A, Panel A** of Karlan and List (2007):
+
+- Reported control group response rate: **1.8%**  
+- Reported treatment group response rate: **2.2%**  
+- Difference: **0.004** / **0.4 percentage points**
+
+This nearly matches the **0.0042** effect size estimated in my regression. This agreement supports the accuracy of my replication and reinforces the study’s conclusion: **matching offers boost donation behavior in a statistically and behaviorally significant way**.
+
+> Small psychological nudges, like a match, can meaningfully shift real world decisions, even when the actual financial difference is minor.
 
 
 _todo: run a probit regression where the outcome variable is whether any charitable donation was made and the explanatory variable is assignment to treatment or control. Confirm that your results replicate Table 3 column 1 in the paper._
