@@ -1,8 +1,4 @@
-# This is Project 3
-
-## Section 1: Data
-Marketing Analytics HW1
-
+# This is Project 3 (HW 1)
 ---
 title: "A Replication of Karlan and List (2007)"
 author: "Alexa Gamble"
@@ -25,7 +21,7 @@ This project seeks to replicate their results.
 ### Description
 ```{python} 
 import pandas as pd
-df_k = pd.read_stata("karlan_list_2007.dta")
+df_k = pd.read_stata("/home/jovyan/Desktop/MGTA 495 - Marketing Analytics/karlan_list_2007.dta")
 df_k
 ```
 
@@ -126,9 +122,11 @@ To assess whether the random assignment mechanism was successful, I conduct bala
 - `pwhite`: proportion of white residents in the donor’s area  
 - `ave_hh_sz`: average household size
 
-For each variable, I apply both a **manual t-test** (based on the formula from lecture) and a **linear regression** to compare treatment and control groups. These methods should yield consistent results, since both estimate the same underlying difference in means.
+For each variable, I apply both a **manual t-test** and a **linear regression** to compare treatment and control groups. These methods should yield consistent results, since both estimate the same underlying difference in means.
 
 ```{python}
+import numpy as np
+import statsmodels.formula.api as smf
 
 # Function to compute manual t-test and regression for a given variable
 def balance_test(df, variable, treatment_col="treatment"):
@@ -162,7 +160,6 @@ def balance_test(df, variable, treatment_col="treatment"):
     print(f"Regression coefficient on treatment: {coef:.4f}, p = {pval:.4f}")
     return model.summary()
 
-# Run balance tests
 balance_test(df_k, "mrm2")
 balance_test(df_k, "pwhite")
 balance_test(df_k, "ave_hh_sz")
@@ -172,7 +169,7 @@ balance_test(df_k, "ave_hh_sz")
 #### `mrm2` (Months Since Last Donation)
 
 - **Manual t-test**:
-  - t-statistic: **0.1195**, degrees of freedom ≈ 33,394
+  - t-statistic: **0.1195**, degrees of freedom ≈ 33,394, p = **0.905**
   - Not statistically significant
 
 - **Regression (`mrm2 ~ treatment`)**:
@@ -186,7 +183,7 @@ Interpretation: There is no statistically significant difference in prior giving
 #### `pwhite` (Proportion White)
 
 - **Manual t-test**:
-  - t-statistic: **–0.5590**, degrees of freedom ≈ 31,876
+  - t-statistic: **–0.5590**, degrees of freedom ≈ 31,876, p = **0.5753**
   - Not statistically significant
 
 - **Regression (`pwhite ~ treatment`)**:
@@ -200,7 +197,7 @@ Interpretation: Racial composition across treatment and control groups is nearly
 #### `ave_hh_sz` (Average Household Size)
 
 - **Manual t-test**:
-  - t-statistic: **0.8234**, degrees of freedom ≈ 31,960
+  - t-statistic: **0.8234**, degrees of freedom ≈ 31,960, p = **0.4108**
   - Not statistically significant
 
 - **Regression (`ave_hh_sz ~ treatment`)**:
@@ -209,14 +206,13 @@ Interpretation: Racial composition across treatment and control groups is nearly
 
 Interpretation: Household size is well balanced between the groups, with the regression confirming no significant difference.
 
-### Commentary
+### Comments
 
 The results from all three variables show no statistically significant differences between the treatment and control groups. This supports the integrity of the randomization process and aligns with Table 1 in Karlan and List (2007), which was included in the original paper for the same purpose.
 
 By demonstrating that key baseline characteristics are similar across groups, we can be more confident that any observed differences in outcome variables can be attributed to the treatment itself rather than to underlying differences in the populations.
 
 The balance tests confirm that random assignment was successfully implemented in the experiment.
-
 
 
 
@@ -228,7 +224,28 @@ First, I analyze whether matched donations lead to an increased response rate of
 
 _todo: make a barplot with two bars. Each bar is the proportion of people who donated. One bar for treatment and one bar for control._
 
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df_k['gave'] = (df_k['amount'] > 0).astype(int)
+
+response_rates = df_k.groupby('treatment')['gave'].mean()
+labels = ['Control', 'Treatment']
+
+plt.figure(figsize=(6, 4))
+plt.bar(labels, response_rates, color=['gray', 'blue'])
+plt.ylabel('Proportion Donated')
+plt.title('Response Rate by Group')
+plt.ylim(0, 0.05)  # adjust as needed
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
+```
+
 _todo: run a t-test between the treatment and control groups on the binary outcome of whether any charitable donation was made. Also run a bivariate linear regression that demonstrates the same finding. (It may help to confirm your calculations match Table 2a Panel A.) Report your statistical results and interpret them in the context of the experiment (e.g., if you found a difference with a small p-value or that was statistically significant at some threshold, what have you learned about human behavior? Use mostly English words, not numbers or stats, to explain your finding.)_
+
+
 
 _todo: run a probit regression where the outcome variable is whether any charitable donation was made and the explanatory variable is assignment to treatment or control. Confirm that your results replicate Table 3 column 1 in the paper._
 
