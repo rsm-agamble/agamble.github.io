@@ -588,7 +588,7 @@ Further suppose that the true distribution of respondents who do get a charitabl
 ### Law of Large Numbers
 
 ```{python}
-#| echo: false
+
 np.random.seed(42)
 
 # Control group: Bernoulli(p=0.018), 100,000 draws
@@ -628,7 +628,7 @@ With enough independent observations, the sample average of a statistic becomes 
 ### Central Limit Theorem
 
 ```{python}
-#| echo: false
+
 sample_sizes = [50, 200, 500, 1000]
 simulations = 1000
 p_control = 0.018
