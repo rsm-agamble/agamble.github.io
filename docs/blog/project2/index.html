@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Your Name">
+<meta name="author" content="Alexa Gamble">
 <meta name="dcterms.date" content="2025-05-03">
 
 <title>Poisson Regression Examples – Alexa’s Website</title>
@@ -190,7 +190,6 @@ window.Quarto = {
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
   <li><a href="#compare-histograms-and-means-of-number-of-patents-by-customer-status" id="toc-compare-histograms-and-means-of-number-of-patents-by-customer-status" class="nav-link" data-scroll-target="#compare-histograms-and-means-of-number-of-patents-by-customer-status">Compare histograms and means of number of patents by customer status</a></li>
   <li><a href="#compare-regions-and-ages-by-customer-status" id="toc-compare-regions-and-ages-by-customer-status" class="nav-link" data-scroll-target="#compare-regions-and-ages-by-customer-status">Compare regions and ages by customer status</a></li>
-  <li><a href="#compare-regions-and-ages-by-customer-status-1" id="toc-compare-regions-and-ages-by-customer-status-1" class="nav-link" data-scroll-target="#compare-regions-and-ages-by-customer-status-1">Compare regions and ages by customer status</a></li>
   <li><a href="#estimation-of-simple-poisson-model" id="toc-estimation-of-simple-poisson-model" class="nav-link" data-scroll-target="#estimation-of-simple-poisson-model">Estimation of Simple Poisson Model</a></li>
   <li><a href="#plot-of-log-likelihood-across-lambda-values" id="toc-plot-of-log-likelihood-across-lambda-values" class="nav-link" data-scroll-target="#plot-of-log-likelihood-across-lambda-values">Plot of Log-Likelihood Across Lambda Values</a></li>
   <li><a href="#solving-for-mle-of-lambda-analytical-derivation" id="toc-solving-for-mle-of-lambda-analytical-derivation" class="nav-link" data-scroll-target="#solving-for-mle-of-lambda-analytical-derivation">Solving for MLE of Lambda (Analytical Derivation)</a></li>
@@ -219,7 +218,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Your Name </p>
+             <p>Alexa Gamble </p>
           </div>
   </div>
     
@@ -247,7 +246,7 @@ window.Quarto = {
 </section>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
-<div id="56e66eee" class="cell" data-execution_count="1">
+<div id="82b4b159" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -360,7 +359,7 @@ window.Quarto = {
 <section id="compare-histograms-and-means-of-number-of-patents-by-customer-status" class="level3">
 <h3 class="anchored" data-anchor-id="compare-histograms-and-means-of-number-of-patents-by-customer-status">Compare histograms and means of number of patents by customer status</h3>
 <p>Blueprinty customers are not selected at random. It may be important to account for systematic differences in the age and regional location of customers vs non-customers.</p>
-<div id="63b47d05" class="cell" data-execution_count="2">
+<div id="81489a3b" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>customers <span class="op">=</span> blueprinty[blueprinty[<span class="st">'iscustomer'</span>] <span class="op">==</span> <span class="dv">1</span>]</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>non_customers <span class="op">=</span> blueprinty[blueprinty[<span class="st">'iscustomer'</span>] <span class="op">==</span> <span class="dv">0</span>]</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -406,10 +405,7 @@ Non-Customer Mean Number of Patents: 3.4730127576054954</code></pre>
 </section>
 <section id="compare-regions-and-ages-by-customer-status" class="level3">
 <h3 class="anchored" data-anchor-id="compare-regions-and-ages-by-customer-status">Compare regions and ages by customer status</h3>
-</section>
-<section id="compare-regions-and-ages-by-customer-status-1" class="level3">
-<h3 class="anchored" data-anchor-id="compare-regions-and-ages-by-customer-status-1">Compare regions and ages by customer status</h3>
-<div id="fe305924" class="cell" data-execution_count="3">
+<div id="6dff2276" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -436,7 +432,7 @@ Non-Customer Mean Number of Patents: 3.4730127576054954</code></pre>
 </div>
 </div>
 </div>
-<div id="96dea731" class="cell" data-execution_count="4">
+<div id="ba5b0dd3" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">5</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sns.boxplot(data<span class="op">=</span>blueprinty, x<span class="op">=</span><span class="st">'iscustomer'</span>, y<span class="op">=</span><span class="st">'age'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Age of Firms by Customer Status'</span>)</span>
@@ -482,7 +478,7 @@ L(\lambda) = \prod_{i=1}^{n} \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i!}
 <p><span class="math display">\[
 \ell(\lambda) = \sum_{i=1}^{n} \left( -\lambda + Y_i \log(\lambda) - \log(Y_i!) \right)
 \]</span></p>
-<div id="ca802639" class="cell" data-execution_count="5">
+<div id="7fadf3a3" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> gammaln</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> poisson_log_likelihood(lmbda, y):</span>
@@ -494,7 +490,7 @@ L(\lambda) = \prod_{i=1}^{n} \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i!}
 </section>
 <section id="plot-of-log-likelihood-across-lambda-values" class="level3">
 <h3 class="anchored" data-anchor-id="plot-of-log-likelihood-across-lambda-values">Plot of Log-Likelihood Across Lambda Values</h3>
-<div id="2c13d9c3" class="cell" data-execution_count="6">
+<div id="071103b5" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> blueprinty[<span class="st">'patents'</span>].values</span>
@@ -545,7 +541,7 @@ L(\lambda) = \prod_{i=1}^{n} \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i!}
 </section>
 <section id="find-mle-of-lambda-via-optimization" class="level3">
 <h3 class="anchored" data-anchor-id="find-mle-of-lambda-via-optimization">Find MLE of Lambda via Optimization</h3>
-<div id="4aedc24d" class="cell" data-execution_count="7">
+<div id="6555b313" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize_scalar</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> gammaln</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -570,7 +566,7 @@ L(\lambda) = \prod_{i=1}^{n} \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i!}
 <p>Next, we extend our simple Poisson model to a Poisson Regression Model such that <span class="math inline">\(Y_i = \text{Poisson}(\lambda_i)\)</span> where <span class="math inline">\(\lambda_i = \exp(X_i'\beta)\)</span>. The interpretation is that the success rate of patent awards is not constant across all firms (<span class="math inline">\(\lambda\)</span>) but rather is a function of firm characteristics <span class="math inline">\(X_i\)</span>. Specifically, we will use the covariates age, age squared, region, and whether the firm is a customer of Blueprinty.</p>
 <section id="poisson-regression-log-likelihood-function" class="level4">
 <h4 class="anchored" data-anchor-id="poisson-regression-log-likelihood-function">Poisson Regression Log-Likelihood Function</h4>
-<div id="98688ce4" class="cell" data-execution_count="8">
+<div id="fe42731d" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> poisson_regression_log_likelihood(beta, X, y):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    beta <span class="op">=</span> np.asarray(beta, dtype<span class="op">=</span>np.float64)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> np.asarray(X, dtype<span class="op">=</span>np.float64)</span>
@@ -587,7 +583,7 @@ L(\lambda) = \prod_{i=1}^{n} \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i!}
 </section>
 <section id="build-design-matrix-for-poisson-regression" class="level4">
 <h4 class="anchored" data-anchor-id="build-design-matrix-for-poisson-regression">Build Design Matrix for Poisson Regression</h4>
-<div id="58c8f071" class="cell" data-execution_count="9">
+<div id="aa3dae0a" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>blueprinty[<span class="st">'age_squared'</span>] <span class="op">=</span> blueprinty[<span class="st">'age'</span>]<span class="op">**</span><span class="dv">2</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>region_dummies <span class="op">=</span> pd.get_dummies(blueprinty[<span class="st">'region'</span>], drop_first<span class="op">=</span><span class="va">True</span>)</span>
@@ -604,7 +600,7 @@ L(\lambda) = \prod_{i=1}^{n} \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i!}
 </section>
 <section id="estimate-beta-via-maximum-likelihood" class="level4">
 <h4 class="anchored" data-anchor-id="estimate-beta-via-maximum-likelihood">Estimate Beta via Maximum Likelihood</h4>
-<div id="53406ee3" class="cell" data-execution_count="10">
+<div id="6bcc831a" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> gammaln</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -632,7 +628,7 @@ L(\lambda) = \prod_{i=1}^{n} \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i!}
 </section>
 <section id="extract-standard-errors-and-summarize-results" class="level4">
 <h4 class="anchored" data-anchor-id="extract-standard-errors-and-summarize-results">Extract Standard Errors and Summarize Results</h4>
-<div id="49e4ef42" class="cell" data-execution_count="11">
+<div id="cfd9280d" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>vcov <span class="op">=</span> result.hess_inv</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>standard_errors <span class="op">=</span> np.sqrt(np.diag(vcov))</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>

@@ -1,7 +1,7 @@
 ---
 title: "Poisson Regression Examples"
-author: "Your Name"
-date: today
+author: "Alexa Gamble"
+date: 05/03/2025
 callout-appearance: minimal # this hides the blue "i" icon on .callout-notes
 ---
 
@@ -67,8 +67,6 @@ The summary statistics support this visual trend:
 
 Although this is a modest difference (approximately 0.66 more patents on average), it is consistent with the idea that Blueprinty customers may be more successful or more prolific in obtaining patents. However, it is also possible that other factor, such as firm age or region, may explain the difference, so further analysis is needed before drawing causal conclusions.
 
-
-### Compare regions and ages by customer status
 
 ### Compare regions and ages by customer status
 
