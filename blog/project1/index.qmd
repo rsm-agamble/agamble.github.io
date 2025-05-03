@@ -27,7 +27,7 @@ This project seeks to replicate their results.
 ```{python} 
 import pandas as pd
 import numpy as np
-df_k = pd.read_stata("/home/jovyan/Desktop/MGTA 495 - Marketing Analytics/karlan_list_2007.dta")
+df_k = pd.read_stata("/home/jovyan/Desktop/Marketing Analytics Website : HW's/karlan_list_2007.dta")
 df_k
 ```
 
