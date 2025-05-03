@@ -21,6 +21,7 @@ However, Blueprinty has collected data on 1,500 mature (non-startup) engineering
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 
 blueprinty = pd.read_csv("/home/jovyan/Desktop/Marketing Analytics Website : HW's/blueprinty.csv")
 airbnb = pd.read_csv("/home/jovyan/Desktop/Marketing Analytics Website : HW's/airbnb.csv")
@@ -33,13 +34,9 @@ blueprinty
 Blueprinty customers are not selected at random. It may be important to account for systematic differences in the age and regional location of customers vs non-customers.
 
 ```{python}
-# Histogram of number of patents by customer status
-
-# Separate data by customer status
 customers = blueprinty[blueprinty['iscustomer'] == 1]
 non_customers = blueprinty[blueprinty['iscustomer'] == 0]
 
-# Plot histograms of number of patents
 plt.figure(figsize=(10, 5))
 plt.hist(customers['patents'], bins=20, alpha=0.6, label='Customers', edgecolor='black')
 plt.hist(non_customers['patents'], bins=20, alpha=0.6, label='Non-Customers', edgecolor='black')
@@ -50,7 +47,6 @@ plt.legend()
 plt.grid(True)
 plt.show()
 
-# Calculate and compare means
 mean_customers = customers['patents'].mean()
 mean_non_customers = non_customers['patents'].mean()
 
@@ -151,7 +147,7 @@ from scipy.special import gammaln
 def poisson_log_likelihood(lmbda, y):
     if lmbda <= 0:
         return -np.inf
-    return np.sum(-lmbda + y * np.log(lmbda) - gammaln(y + 1))  # log(y!) = gammaln(y + 1)
+    return np.sum(-lmbda + y * np.log(lmbda) - gammaln(y + 1)) 
 
 ```
 
@@ -162,7 +158,6 @@ import numpy as np
 
 y = blueprinty['patents'].values
 
-# Range of lambda values to test
 lambda_vals = np.linspace(0.1, 10, 200)
 
 log_liks = [poisson_log_likelihood(lmbda, y) for lmbda in lambda_vals]
@@ -214,9 +209,7 @@ _todo: Find the MLE by optimizing your likelihood function with optim() in R or 
 ```{python}
 from scipy.optimize import minimize_scalar
 from scipy.special import gammaln
-import numpy as np
 
-# Define negative log-likelihood for minimization
 def neg_poisson_log_likelihood(lmbda, y):
     if lmbda <= 0:
         return np.inf
@@ -224,7 +217,6 @@ def neg_poisson_log_likelihood(lmbda, y):
 
 y = blueprinty['patents'].values
 
-# Optimize (minimize the negative log-likelihood)
 result = minimize_scalar(neg_poisson_log_likelihood, bounds=(0.1, 10), args=(y,), method='bounded')
 
 lambda_mle = result.x
@@ -238,39 +230,28 @@ Next, we extend our simple Poisson model to a Poisson Regression Model such that
 #### Poisson Regression Log-Likelihood Function
 
 ```{python}
-import numpy as np
-from scipy.special import gammaln
-
-# Log-likelihood for Poisson regression
 def poisson_regression_log_likelihood(beta, X, y):
-    beta = np.asarray(beta)
-    X = np.asarray(X)
-    y = np.asarray(y)
-    
-    # Linear predictor and lambda_i = exp(X @ beta)
+    beta = np.asarray(beta, dtype=np.float64)
+    X = np.asarray(X, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64)
+
     eta = X @ beta
+
+    eta = np.clip(eta, -20, 20)
     lam = np.exp(eta)
 
-    # Log-likelihood
     log_lik = np.sum(-lam + y * eta - gammaln(y + 1))
     return -log_lik
-```
 
-_todo: Use your function along with R's optim() or Python's sp.optimize() to find the MLE vector and the Hessian of the Poisson model with covariates. Specifically, the first column of X should be all 1's to enable a constant term in the model, and the subsequent columns should be age, age squared, binary variables for all but one of the regions, and the binary customer variable. Use the Hessian to find standard errors of the beta parameter estimates and present a table of coefficients and standard errors._
+```
 
 #### Build Design Matrix for Poisson Regression
 
 ```{python}
-import pandas as pd
-import numpy as np
-
-# Create design matrix X
 blueprinty['age_squared'] = blueprinty['age']**2
 
-# Get region dummies, dropping one (e.g., alphabetically first)
 region_dummies = pd.get_dummies(blueprinty['region'], drop_first=True)
 
-# Combine all predictors
 X = pd.concat([
     pd.Series(1, index=blueprinty.index, name='intercept'),
     blueprinty[['age', 'age_squared', 'iscustomer']],
@@ -281,28 +262,19 @@ y = blueprinty['patents'].values
 X_matrix = X.values
 ```
 
-#### Estimate Beta via Maximum Likelihood (Fixed)
+#### Estimate Beta via Maximum Likelihood
 
 ```{python}
 from scipy.optimize import minimize
 from scipy.special import gammaln
-import numpy as np
 
-# Ensure X and y are numeric arrays
 X_matrix = np.asarray(X.values, dtype=np.float64)
 y = np.asarray(blueprinty['patents'].values, dtype=np.float64)
 
-# Log-likelihood for Poisson regression (negated for minimization)
-def poisson_regression_log_likelihood(beta, X, y):
-    beta = np.asarray(beta, dtype=np.float64)
-    eta = X @ beta
-    lam = np.exp(eta)  # ensure eta is a NumPy array
-    return -np.sum(-lam + y * eta - gammaln(y + 1))
 
-# Initial guess
-beta_init = np.zeros(X_matrix.shape[1])
+np.random.seed(42)
+beta_init = np.random.normal(0, 0.1, size=X_matrix.shape[1])
 
-# Minimize
 result = minimize(
     poisson_regression_log_likelihood,
     beta_init,
@@ -310,7 +282,6 @@ result = minimize(
     method='BFGS'
 )
 
-# Estimated coefficients
 beta_hat = result.x
 beta_hat
 ```
@@ -318,11 +289,9 @@ beta_hat
 #### Extract Standard Errors and Summarize Results
 
 ```{python}
-# Hessian inverse = estimated variance-covariance matrix
 vcov = result.hess_inv
 standard_errors = np.sqrt(np.diag(vcov))
 
-# Combine into summary table
 summary_table = pd.DataFrame({
     'Coefficient': beta_hat,
     'Std. Error': standard_errors
@@ -331,9 +300,38 @@ summary_table = pd.DataFrame({
 summary_table
 ```
 
-
+NOT SURE IF SUMMARY TABLE IS RIGHT
 
 _todo: Check your results using R's glm() function or Python sm.GLM() function._
+
+WRONG TOO!!!
+
+<!-- ### Check Results with statsmodels GLM (Poisson Regression)
+
+```{python}
+import statsmodels.api as sm
+import numpy as np
+
+# Drop your manual intercept and let statsmodels add it
+X_sm = X.drop(columns='intercept', errors='ignore')
+
+# Make sure all columns are numeric
+X_sm = X_sm.apply(pd.to_numeric)
+
+# Add constant (intercept)
+X_sm = sm.add_constant(X_sm)
+
+# Response variable
+y_sm = pd.to_numeric(blueprinty['patents'])
+
+# Fit Poisson GLM
+model = sm.GLM(y_sm, X_sm, family=sm.families.Poisson())
+results = model.fit()
+
+# Summary of coefficients and standard errors
+results_summary = results.summary2().tables[1]
+results_summary
+``` -->
 
 _todo: Interpret the results._ 
 
