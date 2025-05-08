@@ -250,7 +250,7 @@ window.Quarto = {
 </section>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
-<div id="d62bf606" class="cell" data-execution_count="1">
+<div id="42c67c18" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -363,7 +363,7 @@ window.Quarto = {
 <section id="compare-histograms-and-means-of-number-of-patents-by-customer-status" class="level3">
 <h3 class="anchored" data-anchor-id="compare-histograms-and-means-of-number-of-patents-by-customer-status">Compare histograms and means of number of patents by customer status</h3>
 <p>Blueprinty customers are not selected at random. It may be important to account for systematic differences in the age and regional location of customers vs non-customers.</p>
-<div id="1b50d229" class="cell" data-execution_count="2">
+<div id="e3600ebf" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>customers <span class="op">=</span> blueprinty[blueprinty[<span class="st">'iscustomer'</span>] <span class="op">==</span> <span class="dv">1</span>]</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>non_customers <span class="op">=</span> blueprinty[blueprinty[<span class="st">'iscustomer'</span>] <span class="op">==</span> <span class="dv">0</span>]</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -409,7 +409,7 @@ Non-Customer Mean Number of Patents: 3.4730127576054954</code></pre>
 </section>
 <section id="compare-regions-and-ages-by-customer-status" class="level3">
 <h3 class="anchored" data-anchor-id="compare-regions-and-ages-by-customer-status">Compare regions and ages by customer status</h3>
-<div id="1ffb26b7" class="cell" data-execution_count="3">
+<div id="375ddf28" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -436,7 +436,7 @@ Non-Customer Mean Number of Patents: 3.4730127576054954</code></pre>
 </div>
 </div>
 </div>
-<div id="0c6ef633" class="cell" data-execution_count="4">
+<div id="f7c00f22" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">5</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sns.boxplot(data<span class="op">=</span>blueprinty, x<span class="op">=</span><span class="st">'iscustomer'</span>, y<span class="op">=</span><span class="st">'age'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Age of Firms by Customer Status'</span>)</span>
@@ -482,7 +482,7 @@ L(\lambda) = \prod_{i=1}^{n} \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i!}
 <p><span class="math display">\[
 L(\lambda) = \frac{e^{-n\lambda} \lambda^{\sum Y_i}}{\prod Y_i!}
 \]</span></p>
-<div id="ca208970" class="cell" data-execution_count="5">
+<div id="9dcbb7c2" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> gammaln</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> poisson_log_likelihood(lmbda, y):</span>
@@ -494,7 +494,7 @@ L(\lambda) = \frac{e^{-n\lambda} \lambda^{\sum Y_i}}{\prod Y_i!}
 </section>
 <section id="plot-of-log-likelihood-across-lambda-values" class="level3">
 <h3 class="anchored" data-anchor-id="plot-of-log-likelihood-across-lambda-values">Plot of Log-Likelihood Across Lambda Values</h3>
-<div id="5f525174" class="cell" data-execution_count="6">
+<div id="fc8a83f6" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> blueprinty[<span class="st">'patents'</span>].values</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>lambda_vals <span class="op">=</span> np.linspace(<span class="fl">0.1</span>, <span class="dv">10</span>, <span class="dv">200</span>)</span>
@@ -542,7 +542,7 @@ L(\lambda) = \frac{e^{-n\lambda} \lambda^{\sum Y_i}}{\prod Y_i!}
 </section>
 <section id="find-mle-of-lambda-via-optimization" class="level3">
 <h3 class="anchored" data-anchor-id="find-mle-of-lambda-via-optimization">Find MLE of Lambda via Optimization</h3>
-<div id="956c2d7d" class="cell" data-execution_count="7">
+<div id="e7c31f24" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize_scalar</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> neg_poisson_log_likelihood(lmbda, y):</span>
@@ -564,7 +564,7 @@ L(\lambda) = \frac{e^{-n\lambda} \lambda^{\sum Y_i}}{\prod Y_i!}
 <section id="estimation-of-poisson-regression-model" class="level3">
 <h3 class="anchored" data-anchor-id="estimation-of-poisson-regression-model">Estimation of Poisson Regression Model</h3>
 <p>Next, extended our simple Poisson model to a Poisson Regression Model such that <span class="math inline">\(Y_i = \text{Poisson}(\lambda_i)\)</span> where <span class="math inline">\(\lambda_i = \exp(X_i'\beta)\)</span>. The interpretation is that the success rate of patent awards is not constant across all firms (<span class="math inline">\(\lambda\)</span>) but rather is a function of firm characteristics <span class="math inline">\(X_i\)</span>. Specifically, I will use the covariates age, age squared, region, and whether the firm is a customer of Blueprinty.</p>
-<div id="1ca4f567" class="cell" data-execution_count="8">
+<div id="39aac029" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> poisson_regression_likelihood(beta, X, y, alpha<span class="op">=</span><span class="fl">0.01</span>):</span>
@@ -580,7 +580,7 @@ L(\lambda) = \frac{e^{-n\lambda} \lambda^{\sum Y_i}}{\prod Y_i!}
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    penalty <span class="op">=</span> alpha <span class="op">*</span> np.<span class="bu">sum</span>(beta<span class="op">**</span><span class="dv">2</span>)</span>
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> log_likelihood <span class="op">-</span> penalty</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="a7572b62" class="cell" data-execution_count="9">
+<div id="95d0edce" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>blueprinty[<span class="st">'age_squared'</span>] <span class="op">=</span> blueprinty[<span class="st">'age'</span>] <span class="op">**</span> <span class="dv">2</span></span>
@@ -674,7 +674,7 @@ L(\lambda) = \frac{e^{-n\lambda} \lambda^{\sum Y_i}}{\prod Y_i!}
 </div>
 </div>
 </div>
-<div id="8166ee30" class="cell" data-execution_count="10">
+<div id="9ce93e23" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure all covariates are numeric</span></span>
@@ -701,7 +701,7 @@ Model Family:                 Poisson   Df Model:                            7
 Link Function:                    Log   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -3258.1
 Date:                Wed, 07 May 2025   Deviance:                       2143.3
-Time:                        19:31:18   Pearson chi2:                 2.07e+03
+Time:                        19:32:56   Pearson chi2:                 2.07e+03
 No. Iterations:                     5   Pseudo R-squ. (CS):             0.1360
 Covariance Type:            nonrobust                                         
 ===============================================================================
@@ -757,7 +757,7 @@ Age and customer status are strong and statistically significant predictors of p
 </section>
 <section id="estimated-effect-of-blueprintys-software-on-patent-counts" class="level4">
 <h4 class="anchored" data-anchor-id="estimated-effect-of-blueprintys-software-on-patent-counts">Estimated Effect of Blueprinty’s Software on Patent Counts</h4>
-<div id="182873c1" class="cell" data-execution_count="11">
+<div id="1f2441d9" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>X_0 <span class="op">=</span> X_matrix.copy()</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>X_1 <span class="op">=</span> X_matrix.copy()</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -832,7 +832,7 @@ Variable Definitions
 </section>
 <section id="data-cleaning-and-preparation" class="level3">
 <h3 class="anchored" data-anchor-id="data-cleaning-and-preparation">Data Cleaning and Preparation</h3>
-<div id="275cfbcf" class="cell" data-execution_count="12">
+<div id="69b1c452" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>columns_needed <span class="op">=</span> [</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'days'</span>, <span class="st">'room_type'</span>, <span class="st">'bathrooms'</span>, <span class="st">'bedrooms'</span>, <span class="st">'price'</span>,</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'review_scores_cleanliness'</span>, <span class="st">'review_scores_location'</span>,</span>
@@ -845,7 +845,7 @@ Variable Definitions
 </section>
 <section id="explatory-data-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="explatory-data-analysis">Explatory Data Analysis</h3>
-<div id="4915eea1" class="cell" data-execution_count="13">
+<div id="c7749ce4" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -878,7 +878,7 @@ Variable Definitions
 </section>
 <section id="poisson-regression-model" class="level3">
 <h3 class="anchored" data-anchor-id="poisson-regression-model">Poisson Regression Model</h3>
-<div id="e2e8c410" class="cell" data-execution_count="14">
+<div id="361b9dca" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> airbnb[[</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'days'</span>, <span class="st">'bathrooms'</span>, <span class="st">'bedrooms'</span>, <span class="st">'price'</span>,</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'review_scores_cleanliness'</span>, <span class="st">'review_scores_location'</span>, <span class="st">'review_scores_value'</span>,</span>
@@ -904,7 +904,7 @@ Model Family:                 Poisson   Df Model:                           10
 Link Function:                    Log   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:            -5.2418e+05
 Date:                Wed, 07 May 2025   Deviance:                   9.2689e+05
-Time:                        19:31:19   Pearson chi2:                 1.37e+06
+Time:                        19:32:57   Pearson chi2:                 1.37e+06
 No. Iterations:                    10   Pseudo R-squ. (CS):             0.6840
 Covariance Type:            nonrobust                                         
 =============================================================================================
@@ -934,7 +934,7 @@ instant_bookable_t            0.3459      0.003    119.666      0.000       0.34
 <li><strong>Dependent variable</strong>: <code>number_of_reviews</code></li>
 <li><strong>Model family</strong>: Poisson (log link)</li>
 <li><strong>Observations</strong>: 30,160</li>
-<li><strong>Pseudo R² (Cragg &amp; Uhler’s)</strong>: 0.684 — indicates strong explanatory power for count data.</li>
+<li><strong>Pseudo R²</strong>: 0.684 - indicates strong explanatory power for count data.</li>
 <li><strong>All predictors are statistically significant (p &lt; 0.05)</strong></li>
 </ul>
 </section>

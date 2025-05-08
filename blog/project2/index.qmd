@@ -455,7 +455,7 @@ Estimated a Poisson regression model using listing-level data from AirBnB in New
 - **Dependent variable**: `number_of_reviews`
 - **Model family**: Poisson (log link)
 - **Observations**: 30,160
-- **Pseudo R² (Cragg & Uhler's)**: 0.684 — indicates strong explanatory power for count data.
+- **Pseudo R²**: 0.684 - indicates strong explanatory power for count data.
 - **All predictors are statistically significant (p < 0.05)**
 
 #### Key Coefficient Interpretations
