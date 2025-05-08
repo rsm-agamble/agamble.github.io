@@ -133,10 +133,10 @@ $$
 L(\lambda) = \prod_{i=1}^{n} \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i!}
 $$
 
-Taking the natural log of the likelihood (log-likelihood):
+This is then simplified to:
 
 $$
-\ell(\lambda) = \sum_{i=1}^{n} \left( -\lambda + Y_i \log(\lambda) - \log(Y_i!) \right)
+L(\lambda) = \frac{e^{-n\lambda} \lambda^{\sum Y_i}}{\prod Y_i!}
 $$
 
 ```{python}
