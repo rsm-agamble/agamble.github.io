@@ -428,19 +428,6 @@ plt.show()
 
 ### Poisson Regression Model
 ```{python}
-# import statsmodels.api as sm
-
-# X = airbnb.drop(columns=["number_of_reviews"])
-# X = sm.add_constant(X)
-# X = X.astype(float)
-
-# y = airbnb["number_of_reviews"]
-
-# model = sm.GLM(y, X, family=sm.families.Poisson())
-# results = model.fit()
-
-# print(results.summary())
-
 X = airbnb[[
     'days', 'bathrooms', 'bedrooms', 'price',
     'review_scores_cleanliness', 'review_scores_location', 'review_scores_value',
