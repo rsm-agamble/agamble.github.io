@@ -450,22 +450,14 @@ print(results.summary())
 
 Estimated a Poisson regression model using listing-level data from AirBnB in New York City. The dependent variable is the number of reviews, which I use as a proxy for the number of bookings. The predictors include listing characteristics (price, bedrooms, bathrooms), review scores, and binary indicators for booking features and room types.
 
-#### Model Summary
-
-- **Dependent variable**: `number_of_reviews`
-- **Model family**: Poisson (log link)
-- **Observations**: 30,160
-- **Pseudo R²**: 0.684 - indicates strong explanatory power for count data.
-- **All predictors are statistically significant (p < 0.05)**
-
 #### Key Coefficient Interpretations
 
-#### Baseline (Intercept)
+##### Baseline (Intercept)
 - `const = 3.4980`
   - When all predictors are 0, the expected number of reviews is:  
     $$ \exp(3.4980) \approx 33 $$
 
-#### Continuous Predictors
+##### Continuous Predictors
 
 - **`days`**: 0.00005072  
   - Each additional day listed increases expected reviews by ~0.5% per 100 days.
@@ -481,7 +473,7 @@ Estimated a Poisson regression model using listing-level data from AirBnB in New
 - **`price`**: -1.791e-5  
   - Very small negative effect. Each additional dollar reduces expected reviews by a negligible amount.
 
-#### Review Scores
+##### Review Scores
 
 - **`review_scores_cleanliness`**: 0.1131  
   - Higher cleanliness scores → ~12% more reviews per point increase
@@ -492,7 +484,7 @@ Estimated a Poisson regression model using listing-level data from AirBnB in New
 - **`review_scores_value`**: -0.0911  
   - Higher value scores → ~8.7% fewer reviews
 
-#### Categorical Predictors (relative to reference category)
+##### Categorical Predictors (relative to reference category)
 
 - **`room_type_Private room`**: -0.0105  
   - Private rooms receive ~1% fewer reviews than entire places
