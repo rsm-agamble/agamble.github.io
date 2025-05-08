@@ -277,14 +277,21 @@ results_df
 ```{python}
 import statsmodels.api as sm
 
-X_sm = sm.add_constant(X_matrix, has_constant='add')
-y_sm = Y
+# Ensure all covariates are numeric
+X_numeric = X.astype(float)
+Y_numeric = Y.astype(float)
 
-# Fit Poisson GLM
-model = sm.GLM(y_sm, X_sm, family=sm.families.Poisson())
-results = model.fit()
+poisson_model = sm.GLM(Y_numeric, X_numeric, family=sm.families.Poisson())
+poisson_results = poisson_model.fit()
+print(poisson_results.summary())
 
-print(results.summary())
+# And to extract coeffs and SEs:
+import pandas as pd
+result_table = pd.DataFrame({
+    'coef': poisson_results.params,
+    'std_err': poisson_results.bse
+})
+print(result_table)
 ```
 
 
@@ -391,17 +398,13 @@ AirBnB is a popular platform for booking short-term rentals. In March 2017, stud
 
 ```{python}
 columns_needed = [
-    "number_of_reviews", "days", "room_type", "bathrooms", "bedrooms", "price",
-    "review_scores_cleanliness", "review_scores_location", "review_scores_value",
-    "instant_bookable"
+    'days', 'room_type', 'bathrooms', 'bedrooms', 'price',
+    'review_scores_cleanliness', 'review_scores_location',
+    'review_scores_value', 'instant_bookable', 'number_of_reviews'
 ]
 airbnb = airbnb[columns_needed].dropna()
 
-# Convert 'instant_bookable' to binary
-airbnb["instant_bookable"] = (airbnb["instant_bookable"] == "t").astype(int)
-
-# One-hot encode 'room_type' (drop first category)
-airbnb = pd.get_dummies(airbnb, columns=["room_type"], drop_first=True)
+airbnb = pd.get_dummies(airbnb, columns=["room_type", "instant_bookable"], drop_first=True)
 ```
 
 ### Explatory Data Analysis 
@@ -425,73 +428,102 @@ plt.show()
 
 ### Poisson Regression Model
 ```{python}
-import statsmodels.api as sm
+# import statsmodels.api as sm
 
-X = airbnb.drop(columns=["number_of_reviews"])
-X = sm.add_constant(X)
+# X = airbnb.drop(columns=["number_of_reviews"])
+# X = sm.add_constant(X)
+# X = X.astype(float)
+
+# y = airbnb["number_of_reviews"]
+
+# model = sm.GLM(y, X, family=sm.families.Poisson())
+# results = model.fit()
+
+# print(results.summary())
+
+X = airbnb[[
+    'days', 'bathrooms', 'bedrooms', 'price',
+    'review_scores_cleanliness', 'review_scores_location', 'review_scores_value',
+    'room_type_Private room', 'room_type_Shared room', 'instant_bookable_t'
+]]
+X = sm.add_constant(X)  # Add intercept term
+Y = airbnb['number_of_reviews']
+
 X = X.astype(float)
+Y = Y.astype(float)
 
-y = airbnb["number_of_reviews"]
-
-model = sm.GLM(y, X, family=sm.families.Poisson())
+# Step 4: Fit Poisson regression model
+model = sm.GLM(Y, X, family=sm.families.Poisson())
 results = model.fit()
 
 print(results.summary())
-```
-
-```{python}
-beta_mle = results.params.values
-std_errors = results.bse.values
-
-predictor_names = results.model.exog_names
-
-results_df = pd.DataFrame({
-    "Coefficient": beta_mle,
-    "Std. Error": std_errors
-}, index=predictor_names)
-
-results_df = results_df.round(4)
-
-results_df
 ```
 
 ### Interpreting Model Coefficients: Variation in Number of Reviews
 
 Estimated a Poisson regression model using listing-level data from AirBnB in New York City. The dependent variable is the number of reviews, which I use as a proxy for the number of bookings. The predictors include listing characteristics (price, bedrooms, bathrooms), review scores, and binary indicators for booking features and room types.
 
-**Key coefficient interpretations:**
+#### Model Summary
 
-- **Intercept (`const`) = 3.498**  
-  This is the baseline log expected number of reviews for a listing with all numeric features at zero and the reference categories for categorical variables. While not directly interpretable, it anchors the model.
+- **Dependent variable**: `number_of_reviews`
+- **Model family**: Poisson (log link)
+- **Observations**: 30,160
+- **Pseudo R² (Cragg & Uhler's)**: 0.684 — indicates strong explanatory power for count data.
+- **All predictors are statistically significant (p < 0.05)**
 
-- **Days active (`days`) = 0.00005**  
-  Each additional day a listing has been active increases the expected number of reviews by about **0.005%** (`exp(0.0000507) ≈ 1.00005`), holding all other variables constant.
+#### Key Coefficient Interpretations
 
-- **Bathrooms = -0.1177**  
-  Listings with more bathrooms are associated with **~11% fewer reviews** per additional bathroom (`exp(-0.1177) ≈ 0.889`). This may reflect less frequently booked luxury or multi-bathroom units.
+#### Baseline (Intercept)
+- `const = 3.4980`
+  - When all predictors are 0, the expected number of reviews is:  
+    $$ \exp(3.4980) \approx 33 $$
 
-- **Bedrooms = 0.0741**  
-  Each additional bedroom corresponds to an **increase of about 7.7%** in the expected number of reviews (`exp(0.0741) ≈ 1.077`).
+#### Continuous Predictors
 
-- **Price = -0.000018**  
-  A $1 increase in nightly price is associated with a very slight **decrease in expected reviews**, though the effect is economically negligible. This suggests price sensitivity is limited or nonlinear.
+- **`days`**: 0.00005072  
+  - Each additional day listed increases expected reviews by ~0.5% per 100 days.
 
-- **Review scores:**
-  - **Cleanliness = 0.1131**  
-    Listings rated 1 point higher on cleanliness receive **~12% more reviews** (`exp(0.1131) ≈ 1.12`).
-  - **Location = -0.0769**  
-    Surprisingly, higher location scores are associated with **~7.4% fewer reviews**, possibly due to multicollinearity or non-monotonic guest expectations.
-  - **Value = -0.0911**  
-    A higher value score is associated with **~8.7% fewer reviews**, which again may reflect a complex relationship between ratings and review volume.
+- **`bathrooms`**: -0.1177  
+  - Each additional bathroom is associated with ~11.1% fewer reviews  
+    $$ \exp(-0.1177) \approx 0.889 $$
 
-- **Instant bookable = 0.3459**  
-  Listings that support instant booking receive **~41% more reviews** on average (`exp(0.3459) ≈ 1.41`), highlighting the importance of convenience in booking behavior.
+- **`bedrooms`**: 0.0741  
+  - Each additional bedroom is associated with ~7.7% more reviews  
+    $$ \exp(0.0741) \approx 1.077 $$
 
-- **Room type (reference: Entire home/apt):**
-  - **Private room = -0.0105**  
-    Slightly fewer reviews, about **1% less** than entire homes.
-  - **Shared room = -0.2463**  
-    Significantly fewer reviews, with **~22% less activity** compared to entire homes.
+- **`price`**: -1.791e-5  
+  - Very small negative effect. Each additional dollar reduces expected reviews by a negligible amount.
 
-Overall, listing convenience (e.g., instant bookable), cleanliness, and size (bedrooms) are strongly associated with greater booking activity. Room type and days listed also matter, while the effect of price and some review scores are more subtle.
+#### Review Scores
+
+- **`review_scores_cleanliness`**: 0.1131  
+  - Higher cleanliness scores → ~12% more reviews per point increase
+
+- **`review_scores_location`**: -0.0769  
+  - Higher location scores → ~7.4% fewer reviews (unexpected, may indicate multicollinearity)
+
+- **`review_scores_value`**: -0.0911  
+  - Higher value scores → ~8.7% fewer reviews
+
+#### Categorical Predictors (relative to reference category)
+
+- **`room_type_Private room`**: -0.0105  
+  - Private rooms receive ~1% fewer reviews than entire places
+
+- **`room_type_Shared room`**: -0.2463  
+  - Shared rooms receive ~22% fewer reviews  
+    $$ \exp(-0.2463) \approx 0.782 $$
+
+- **`instant_bookable_t`**: 0.3459  
+  - Listings that are instantly bookable receive ~41% more reviews  
+    $$ \exp(0.3459) \approx 1.413 $$
+
+#### Key Takeaways
+
+- Listings with **instant booking**, more **bedrooms**, and higher **cleanliness scores** tend to receive more reviews.
+- Shared rooms and higher bathroom count are associated with **fewer reviews**.
+- The negative coefficients for `location` and `value` are counterintuitive and may suggest multicollinearity or omitted variable bias.
+
+
+
 
