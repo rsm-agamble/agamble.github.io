@@ -68,7 +68,7 @@
         "\n",
         ":::: {.callout-note collapse=\"true\"}"
       ],
-      "id": "e1a0a088"
+      "id": "62458209"
     },
     {
       "cell_type": "code",
@@ -142,7 +142,7 @@
         "# Display head\n",
         "conjoint_data.head()"
       ],
-      "id": "cde685a5",
+      "id": "c9f1920e",
       "execution_count": null,
       "outputs": []
     },
@@ -160,7 +160,7 @@
         "\n",
         "_todo: reshape and prep the data_"
       ],
-      "id": "b787edfb"
+      "id": "f81cfd41"
     },
     {
       "cell_type": "code",
@@ -172,7 +172,7 @@
         "\n",
         "conjoint_data.head()"
       ],
-      "id": "e6369909",
+      "id": "5b7d091a",
       "execution_count": null,
       "outputs": []
     },
@@ -191,7 +191,7 @@
         "\n",
         "conjoint_data.head()"
       ],
-      "id": "6d7e77ea",
+      "id": "bebc46cc",
       "execution_count": null,
       "outputs": []
     },
@@ -206,7 +206,7 @@
         "_todo: Use `optim()` in R or `scipy.optimize()` in Python to find the MLEs for the 4 parameters ($\\beta_\\text{netflix}$, $\\beta_\\text{prime}$, $\\beta_\\text{ads}$, $\\beta_\\text{price}$), as well as their standard errors (from the Hessian). For each parameter construct a 95% confidence interval._\n",
         "### Log Likelihood Function"
       ],
-      "id": "d741ca9f"
+      "id": "dbee795c"
     },
     {
       "cell_type": "code",
@@ -238,7 +238,7 @@
         "    \n",
         "    return -ll  # negative for minimization"
       ],
-      "id": "b7eaad44",
+      "id": "f6c4421f",
       "execution_count": null,
       "outputs": []
     },
@@ -250,7 +250,7 @@
         "y = conjoint_data['choice'].values\n",
         "groups = conjoint_data['resp_task'].values"
       ],
-      "id": "91f30886",
+      "id": "d05d62b0",
       "execution_count": null,
       "outputs": []
     },
@@ -260,7 +260,7 @@
       "source": [
         "### MLE Estimation"
       ],
-      "id": "67d8b1e2"
+      "id": "56fbb5a5"
     },
     {
       "cell_type": "code",
@@ -300,7 +300,7 @@
         "\n",
         "results_df"
       ],
-      "id": "c90c72e4",
+      "id": "8498e2a7",
       "execution_count": null,
       "outputs": []
     },
@@ -320,7 +320,7 @@
         "\n",
         "### Metropolis-Hasting MCMC sampler"
       ],
-      "id": "99db4ed8"
+      "id": "c51b295e"
     },
     {
       "cell_type": "code",
@@ -379,7 +379,7 @@
         "initial_beta = np.zeros(4)\n",
         "posterior_samples = run_mcmc(initial_beta, steps=11000, burn_in=1000)"
       ],
-      "id": "b7c00085",
+      "id": "4d327fd6",
       "execution_count": null,
       "outputs": []
     },
@@ -398,7 +398,7 @@
         "\n",
         "summary"
       ],
-      "id": "350b15b4",
+      "id": "bdd4f757",
       "execution_count": null,
       "outputs": []
     },
@@ -410,7 +410,7 @@
         "\n",
         "### Trace Plots"
       ],
-      "id": "212c9113"
+      "id": "188e72b5"
     },
     {
       "cell_type": "code",
@@ -442,7 +442,7 @@
         "plt.tight_layout()\n",
         "plt.show()"
       ],
-      "id": "e2a2c4e6",
+      "id": "44f102f0",
       "execution_count": null,
       "outputs": []
     },
@@ -454,7 +454,7 @@
         "\n",
         "### Report"
       ],
-      "id": "e87a7ccc"
+      "id": "cc3b65fb"
     },
     {
       "cell_type": "code",
@@ -462,7 +462,7 @@
       "source": [
         "summary"
       ],
-      "id": "98cf7b06",
+      "id": "93e79e2d",
       "execution_count": null,
       "outputs": []
     },
@@ -484,7 +484,7 @@
         "\n",
         "_todo: At a high level, discuss what change you would need to make in order to simulate data from --- and estimate the parameters of --- a multi-level (aka random-parameter or hierarchical) model. This is the model we use to analyze \"real world\" conjoint data._\n"
       ],
-      "id": "8529d971"
+      "id": "5c939d14"
     }
   ],
   "metadata": {
