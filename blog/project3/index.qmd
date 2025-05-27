@@ -1,7 +1,7 @@
 ---
 title: "Multinomial Logit Model"
-author: "Your Name"
-date: today
+author: Alexa Gamble
+date: 05/27/2025
 ---
 
 
@@ -61,70 +61,74 @@ where the variables are binary indicators and $\varepsilon$ is Type 1 Extreme Va
 The following code provides the simulation of the conjoint data.
 
 :::: {.callout-note collapse="true"}
-```{r}
-# set seed for reproducibility
-set.seed(123)
+```{python}
+#| code-fold: true
+#| message: false
+#| warning: false
 
-# define attributes
-brand <- c("N", "P", "H") # Netflix, Prime, Hulu
-ad <- c("Yes", "No")
-price <- seq(8, 32, by=4)
+import pandas as pd
+import numpy as np
+import itertools
 
-# generate all possible profiles
-profiles <- expand.grid(
-    brand = brand,
-    ad = ad,
-    price = price
-)
-m <- nrow(profiles)
+# Set seed for reproducibility
+np.random.seed(123)
 
-# assign part-worth utilities (true parameters)
-b_util <- c(N = 1.0, P = 0.5, H = 0)
-a_util <- c(Yes = -0.8, No = 0.0)
-p_util <- function(p) -0.1 * p
+# Define attribute levels
+brands = ['N', 'P', 'H']  # Netflix, Prime, Hulu
+ads = ['Yes', 'No']
+prices = list(range(8, 33, 4))  # 8 to 32 by 4
 
-# number of respondents, choice tasks, and alternatives per task
-n_peeps <- 100
-n_tasks <- 10
-n_alts <- 3
+# Generate all possible profiles
+profiles = pd.DataFrame(list(itertools.product(brands, ads, prices)), columns=['brand', 'ad', 'price'])
+m = len(profiles)
 
-# function to simulate one respondent’s data
-sim_one <- function(id) {
-  
-    datlist <- list()
+# Define part-worth utilities (true parameters)
+b_util = {'N': 1.0, 'P': 0.5, 'H': 0.0}
+a_util = {'Yes': -0.8, 'No': 0.0}
+def p_util(p): return -0.1 * p
+
+# Parameters
+n_peeps = 100
+n_tasks = 10
+n_alts = 3
+
+# Function to simulate one respondent's data
+def sim_one(id):
+    all_tasks = []
+    for t in range(1, n_tasks + 1):
+        sample_profiles = profiles.sample(n=n_alts, replace=False).copy()
+        sample_profiles['resp'] = id
+        sample_profiles['task'] = t
+
+        # Compute deterministic utility
+        sample_profiles['v'] = (
+            sample_profiles['brand'].map(b_util) +
+            sample_profiles['ad'].map(a_util) +
+            p_util(sample_profiles['price'])
+        ).round(10)
+
+        # Add Gumbel noise
+        gumbel_noise = -np.log(-np.log(np.random.uniform(size=n_alts)))
+        sample_profiles['u'] = sample_profiles['v'] + gumbel_noise
+
+        # Identify chosen alternative
+        max_u_idx = sample_profiles['u'].idxmax()
+        sample_profiles['choice'] = 0
+        sample_profiles.loc[max_u_idx, 'choice'] = 1
+
+        all_tasks.append(sample_profiles)
     
-    # loop over choice tasks
-    for (t in 1:n_tasks) {
-        
-        # randomly sample 3 alts (better practice would be to use a design)
-        dat <- cbind(resp=id, task=t, profiles[sample(m, size=n_alts), ])
-        
-        # compute deterministic portion of utility
-        dat$v <- b_util[dat$brand] + a_util[dat$ad] + p_util(dat$price) |> round(10)
-        
-        # add Gumbel noise (Type I extreme value)
-        dat$e <- -log(-log(runif(n_alts)))
-        dat$u <- dat$v + dat$e
-        
-        # identify chosen alternative
-        dat$choice <- as.integer(dat$u == max(dat$u))
-        
-        # store task
-        datlist[[t]] <- dat
-    }
-    
-    # combine all tasks for one respondent
-    do.call(rbind, datlist)
-}
+    return pd.concat(all_tasks)
 
-# simulate data for all respondents
-conjoint_data <- do.call(rbind, lapply(1:n_peeps, sim_one))
+# Simulate all respondents
+conjoint_data = pd.concat([sim_one(i) for i in range(1, n_peeps + 1)], ignore_index=True)
 
-# remove values unobservable to the researcher
-conjoint_data <- conjoint_data[ , c("resp", "task", "brand", "ad", "price", "choice")]
+# Keep only observable columns
+conjoint_data = conjoint_data[['resp', 'task', 'brand', 'ad', 'price', 'choice']]
 
-# clean up
-rm(list=setdiff(ls(), "conjoint_data"))
+# Display head
+conjoint_data.head()
+
 ```
 ::::
 
@@ -136,6 +140,26 @@ The "hard part" of the MNL likelihood function is organizing the data, as we nee
 
 _todo: reshape and prep the data_
 
+```{python}
+import pandas as pd
+
+conjoint_data = pd.read_csv("/home/jovyan/Desktop/Marketing Analytics Website : HW's/conjoint_data.csv")
+
+conjoint_data.head()
+```
+```{python}
+conjoint_data['brand'] = conjoint_data['brand'].astype('category').cat.codes
+conjoint_data['ad'] = conjoint_data['ad'].astype('category').cat.codes
+
+conjoint_data['resp_task'] = conjoint_data['resp'].astype(str) + "_" + conjoint_data['task'].astype(str)
+
+conjoint_data['choice'] = conjoint_data['choice'].astype(int)
+
+conjoint_data = conjoint_data.sort_values(by=['resp', 'task'])
+
+conjoint_data.head()
+```
+
 
 
 ## 4. Estimation via Maximum Likelihood
@@ -143,8 +167,77 @@ _todo: reshape and prep the data_
 _todo: Code up the log-likelihood function._
 
 _todo: Use `optim()` in R or `scipy.optimize()` in Python to find the MLEs for the 4 parameters ($\beta_\text{netflix}$, $\beta_\text{prime}$, $\beta_\text{ads}$, $\beta_\text{price}$), as well as their standard errors (from the Hessian). For each parameter construct a 95% confidence interval._
+### Log Likelihood Function
+```{python}
+from scipy.optimize import minimize
 
+# Create dummy variables for brand (baseline: Hulu → brand=0)
+conjoint_data['is_netflix'] = (conjoint_data['brand'] == 1).astype(int)
+conjoint_data['is_prime'] = (conjoint_data['brand'] == 2).astype(int)
 
+# Utility function for MNL (linear-in-parameters)
+def utility(X, beta):
+    return np.dot(X, beta)
+
+# Log-likelihood function
+def neg_log_likelihood(beta, X, y, groups):
+    ll = 0
+    for g in np.unique(groups):
+        idx = groups == g
+        Xg = X[idx]
+        yg = y[idx]
+        
+        utilities = utility(Xg, beta)
+        exp_u = np.exp(utilities - np.max(utilities))  # for numerical stability
+        probs = exp_u / exp_u.sum()
+        
+        ll += np.log(probs[yg == 1]).sum()
+    
+    return -ll  # negative for minimization
+```
+
+```{python}
+X = conjoint_data[['is_netflix', 'is_prime', 'ad', 'price']].values
+y = conjoint_data['choice'].values
+groups = conjoint_data['resp_task'].values
+```
+
+### MLE Estimation
+```{python}
+# Initial guess
+beta_init = np.zeros(X.shape[1])
+
+# Estimate parameters
+result = minimize(
+    fun=neg_log_likelihood,
+    x0=beta_init,
+    args=(X, y, groups),
+    method='BFGS',
+    options={'disp': True}
+)
+
+# Extract MLEs
+beta_hat = result.x
+hessian_inv = result.hess_inv
+se = np.sqrt(np.diag(hessian_inv))  # standard errors
+
+# 95% confidence intervals
+z = 1.96
+ci_lower = beta_hat - z * se
+ci_upper = beta_hat + z * se
+
+# Create results table
+param_names = ['beta_netflix', 'beta_prime', 'beta_ads', 'beta_price']
+results_df = pd.DataFrame({
+    'Parameter': param_names,
+    'Estimate': beta_hat,
+    'Std. Error': se,
+    '95% CI Lower': ci_lower,
+    '95% CI Upper': ci_upper
+})
+
+results_df
+```
 
 ## 5. Estimation via Bayesian Methods
 
@@ -156,10 +249,120 @@ _hint: instead of calculating post=lik*prior, you can work in the log-space and 
 
 _hint: King Markov (in the video) use a candidate distribution of a coin flip to decide whether to move left or right among his islands.  Unlike King Markov, we have 4 dimensions (because we have 4 betas) and our dimensions are continuous.  So, use a multivariate normal distribution to pospose the next location for the algorithm to move to. I recommend a MNV(mu, Sigma) where mu=c(0,0,0,0) and sigma has diagonal values c(0.05, 0.05, 0.05, 0.005) and zeros on the off-diagonal.  Since this MVN has no covariances, you can sample each dimension independently (so 4 univariate normals instead of 1 multivariate normal), where the first 3 univariate normals are N(0,0.05) and the last one if N(0,0.005)._
 
+### Metropolis-Hasting MCMC sampler
+```{python}
+# Reuse from previous step
+X = conjoint_data[['is_netflix', 'is_prime', 'ad', 'price']].values
+y = conjoint_data['choice'].values
+groups = conjoint_data['resp_task'].values
+
+# Log-prior function
+def log_prior(beta):
+    # Priors: N(0,5) for first 3, N(0,1) for price
+    lp = 0
+    lp += -0.5 * ((beta[0] / np.sqrt(5))**2 + np.log(2 * np.pi * 5))
+    lp += -0.5 * ((beta[1] / np.sqrt(5))**2 + np.log(2 * np.pi * 5))
+    lp += -0.5 * ((beta[2] / np.sqrt(5))**2 + np.log(2 * np.pi * 5))
+    lp += -0.5 * ((beta[3] / np.sqrt(1))**2 + np.log(2 * np.pi * 1))
+    return lp
+
+# Posterior: log-likelihood + log-prior
+def log_posterior(beta, X, y, groups):
+    return -neg_log_likelihood(beta, X, y, groups) + log_prior(beta)
+
+# Metropolis-Hastings MCMC
+def run_mcmc(initial, steps, burn_in=1000):
+    samples = []
+    beta_curr = initial
+    log_post_curr = log_posterior(beta_curr, X, y, groups)
+    
+    for step in range(steps):
+        # Propose new beta from symmetric random walk
+        proposal = beta_curr + np.array([
+            np.random.normal(0, np.sqrt(0.05)),  # netflix
+            np.random.normal(0, np.sqrt(0.05)),  # prime
+            np.random.normal(0, np.sqrt(0.05)),  # ads
+            np.random.normal(0, np.sqrt(0.005))  # price
+        ])
+        
+        log_post_prop = log_posterior(proposal, X, y, groups)
+        accept_ratio = np.exp(log_post_prop - log_post_curr)
+        
+        if np.random.rand() < accept_ratio:
+            beta_curr = proposal
+            log_post_curr = log_post_prop
+        
+        samples.append(beta_curr.copy())
+        
+        if step % 1000 == 0:
+            print(f"Step {step} complete")
+    
+    return np.array(samples[burn_in:])  # discard burn-in
+
+# Run sampler
+np.random.seed(123)
+initial_beta = np.zeros(4)
+posterior_samples = run_mcmc(initial_beta, steps=11000, burn_in=1000)
+```
+
+```{python}
+param_names = ['beta_netflix', 'beta_prime', 'beta_ads', 'beta_price']
+summary = pd.DataFrame({
+    'Parameter': param_names,
+    'Posterior Mean': posterior_samples.mean(axis=0),
+    'Posterior SD': posterior_samples.std(axis=0),
+    '2.5% CI': np.percentile(posterior_samples, 2.5, axis=0),
+    '97.5% CI': np.percentile(posterior_samples, 97.5, axis=0)
+})
+
+summary
+```
+
 
 _todo: for at least one of the 4 parameters, show the trace plot of the algorithm, as well as the histogram of the posterior distribution._
 
+### Trace Plots
+
+```{python}
+import matplotlib.pyplot as plt
+
+# Index of beta_price in your parameter vector
+param_idx = 3  # 0=netflix, 1=prime, 2=ads, 3=price
+param_name = "beta_price"
+samples_price = posterior_samples[:, param_idx]
+
+plt.figure(figsize=(12, 5))
+
+# Trace plot
+plt.subplot(1, 2, 1)
+plt.plot(samples_price)
+plt.title(f"Trace Plot for {param_name}")
+plt.xlabel("Iteration")
+plt.ylabel("Sample Value")
+
+# Posterior histogram
+plt.subplot(1, 2, 2)
+plt.hist(samples_price, bins=30, density=True, alpha=0.7)
+plt.title(f"Posterior Distribution of {param_name}")
+plt.xlabel("Value")
+plt.ylabel("Density")
+
+plt.tight_layout()
+plt.show()
+```
+
 _todo: report the 4 posterior means, standard deviations, and 95% credible intervals and compare them to your results from the Maximum Likelihood approach._
+
+### Report
+```{python}
+summary
+```
+
+The Bayesian and Maximum Likelihood Estimation (MLE) approaches yielded highly consistent results for all four parameters. The posterior mean for β_netflix was 0.947 with a standard deviation of 0.113 and a 95% credible interval of [0.725, 1.179], closely matching the MLE estimate of 0.941 with a standard error of 0.081 and confidence interval of [0.783, 1.099]. Similarly, for β_prime, the posterior mean was 0.499 (SD = 0.109, CI = [0.250, 0.727]) while the MLE estimate was 0.502 (SE = 0.121, CI = [0.264, 0.739]).
+
+For β_ads, the posterior mean was -0.728 with a standard deviation of 0.081 and a credible interval of [-0.905, -0.591], which nearly mirrors the MLE estimate of -0.732 (SE = 0.060, CI = [-0.850, -0.614]). The strongest divergence appears in the β_price parameter: the posterior mean was -0.100 with a small SD of 0.0057 and a narrow credible interval of [-0.109, -0.088], whereas the MLE estimate was -0.099 with a much larger standard error of 0.065 and a confidence interval of [-0.226, 0.027]. Notably, the Bayesian credible interval excludes zero, suggesting stronger evidence of a negative price effect, likely influenced by the informative prior on price (N(0, 1)).
+
+Overall, the Bayesian estimates align closely with their MLE counterparts, with the added benefit of tighter uncertainty bounds due to the incorporation of prior beliefs, particularly for the price coefficient.
 
 
 
