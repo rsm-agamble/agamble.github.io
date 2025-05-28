@@ -143,7 +143,7 @@ _todo: reshape and prep the data_
 ```{python}
 import pandas as pd
 
-conjoint_data = pd.read_csv("/home/jovyan/Desktop/Marketing Analytics Website : HW's/conjoint_data.csv")
+conjoint_data = pd.read_csv("/home/jovyan/Desktop/Marketing Analytics HW/conjoint_data.csv")
 
 conjoint_data.head()
 ```
@@ -352,7 +352,6 @@ _todo: report the 4 posterior means, standard deviations, and 95% credible inter
 
 ### Report
 ```{python}
-#| echo: false
 summary
 ```
 

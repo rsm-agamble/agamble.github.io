@@ -23,8 +23,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-blueprinty = pd.read_csv("/home/jovyan/Desktop/Marketing Analytics Website : HW's/blueprinty.csv")
-airbnb = pd.read_csv("/home/jovyan/Desktop/Marketing Analytics Website : HW's/airbnb.csv")
+blueprinty = pd.read_csv("/home/jovyan/Desktop/Marketing Analytics HW/blueprinty.csv")
+airbnb = pd.read_csv("/home/jovyan/Desktop/Marketing Analytics HW/airbnb.csv")
 
 blueprinty
 ```
