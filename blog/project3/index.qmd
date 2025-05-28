@@ -138,8 +138,6 @@ conjoint_data.head()
 
 The "hard part" of the MNL likelihood function is organizing the data, as we need to keep track of 3 dimensions (consumer $i$, covariate $k$, and product $j$) instead of the typical 2 dimensions for cross-sectional regression models (consumer $i$ and covariate $k$). The fact that each task for each respondent has the same number of alternatives (3) helps.  In addition, we need to convert the categorical variables for brand and ads into binary variables.
 
-_todo: reshape and prep the data_
-
 ```{python}
 import pandas as pd
 
@@ -164,9 +162,6 @@ conjoint_data.head()
 
 ## 4. Estimation via Maximum Likelihood
 
-_todo: Code up the log-likelihood function._
-
-_todo: Use `optim()` in R or `scipy.optimize()` in Python to find the MLEs for the 4 parameters ($\beta_\text{netflix}$, $\beta_\text{prime}$, $\beta_\text{ads}$, $\beta_\text{price}$), as well as their standard errors (from the Hessian). For each parameter construct a 95% confidence interval._
 ### Log Likelihood Function
 ```{python}
 from scipy.optimize import minimize
@@ -241,14 +236,6 @@ results_df
 
 ## 5. Estimation via Bayesian Methods
 
-_todo: code up a metropolis-hasting MCMC sampler of the posterior distribution. Take 11,000 steps and throw away the first 1,000, retaining the subsequent 10,000._
-
-_hint: Use N(0,5) priors for the betas on the binary variables, and a N(0,1) prior for the price beta._
-
-_hint: instead of calculating post=lik*prior, you can work in the log-space and calculate log-post = log-lik + log-prior (this should enable you to re-use your log-likelihood function from the MLE section just above)_
-
-_hint: King Markov (in the video) use a candidate distribution of a coin flip to decide whether to move left or right among his islands.  Unlike King Markov, we have 4 dimensions (because we have 4 betas) and our dimensions are continuous.  So, use a multivariate normal distribution to pospose the next location for the algorithm to move to. I recommend a MNV(mu, Sigma) where mu=c(0,0,0,0) and sigma has diagonal values c(0.05, 0.05, 0.05, 0.005) and zeros on the off-diagonal.  Since this MVN has no covariances, you can sample each dimension independently (so 4 univariate normals instead of 1 multivariate normal), where the first 3 univariate normals are N(0,0.05) and the last one if N(0,0.005)._
-
 ### Metropolis-Hasting MCMC sampler
 ```{python}
 # Reuse from previous step
@@ -309,15 +296,12 @@ summary = pd.DataFrame({
     'Parameter': param_names,
     'Posterior Mean': posterior_samples.mean(axis=0),
     'Posterior SD': posterior_samples.std(axis=0),
-    '5% CI': np.percentile(posterior_samples, 5, axis=0),
-    '95% CI': np.percentile(posterior_samples, 95, axis=0)
+    '2.5% CI': np.percentile(posterior_samples, 5, axis=0),
+    '97.5% CI': np.percentile(posterior_samples, 95, axis=0)
 })
 
 summary
 ```
-
-
-_todo: for at least one of the 4 parameters, show the trace plot of the algorithm, as well as the histogram of the posterior distribution._
 
 ### Trace Plots
 
@@ -348,8 +332,6 @@ plt.tight_layout()
 plt.show()
 ```
 
-_todo: report the 4 posterior means, standard deviations, and 95% credible intervals and compare them to your results from the Maximum Likelihood approach._
-
 ### Report
 ```{python}
 summary
@@ -365,9 +347,18 @@ Overall, the Bayesian estimates align closely with their MLE counterparts, with 
 
 ## 6. Discussion
 
-_todo: Suppose you did not simulate the data. What do you observe about the parameter estimates? What does $\beta_\text{Netflix} > \beta_\text{Prime}$ mean? Does it make sense that $\beta_\text{price}$ is negative?_
+If we did not simulate the data ourselves and instead received it from an external source, the parameter estimates would still provide meaningful insight into consumer preferences, assuming the data was well-designed and representative. The fact that $\beta_{\text{Netflix}} > \beta_{\text{Prime}}$ suggests that, on average, consumers in this dataset have a stronger preference for Netflix over Prime Video, holding all other factors constant. This implies that Netflix offers something more attractive to respondents — perhaps content quality, familiarity, or brand loyalty — that drives higher utility compared to Prime.
 
-_todo: At a high level, discuss what change you would need to make in order to simulate data from --- and estimate the parameters of --- a multi-level (aka random-parameter or hierarchical) model. This is the model we use to analyze "real world" conjoint data._
+Additionally, the negative estimate for $\beta_{\text{price}}$ aligns with economic theory and common sense: as price increases, the utility of a streaming service option decreases, making it less likely to be chosen. This inverse relationship reflects consumers' sensitivity to cost, and its statistical significance (particularly in the Bayesian credible interval) reinforces that price is a meaningful factor in decision-making. Overall, the direction and relative magnitudes of these coefficients appear to be reasonable and interpretable in the context of consumer choice.
+
+
+To simulate data from—and estimate parameters for—a multi-level (also known as random-parameter or hierarchical) model, we would need to introduce respondent-level heterogeneity into the utility function. Rather than assuming a single set of part-worth utilities (the $\beta$ coefficients) shared by all individuals, we would assume that each respondent has their own set of $\beta_i$ parameters. These individual-level coefficients would be drawn from a population-level distribution, typically a multivariate normal. 
+
+In the simulation process, this means generating a different $\boldsymbol{\beta}_i$ vector for each respondent from the specified population distribution, and then using those to generate choices.
+
+On the estimation side, this adds complexity because we are now estimating both the individual-level parameters ($\boldsymbol{\beta}_i$) and the population-level hyperparameters ($\boldsymbol{\mu}$, $\boldsymbol{\Sigma}$). This is usually done via Bayesian methods such as hierarchical MCMC, or via simulation-based maximum likelihood (e.g., using methods like hierarchical Bayes or mixed logit models with simulated integration). These models are more computationally intensive but more realistic, as they allow preferences to vary across individuals—just as they do in real-world choice data.
+
+
 
 
 

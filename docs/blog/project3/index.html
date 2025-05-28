@@ -189,6 +189,7 @@ window.Quarto = {
   <li><a href="#preparing-the-data-for-estimation" id="toc-preparing-the-data-for-estimation" class="nav-link" data-scroll-target="#preparing-the-data-for-estimation">3. Preparing the Data for Estimation</a></li>
   <li><a href="#estimation-via-maximum-likelihood" id="toc-estimation-via-maximum-likelihood" class="nav-link" data-scroll-target="#estimation-via-maximum-likelihood">4. Estimation via Maximum Likelihood</a>
   <ul class="collapse">
+  <li><a href="#log-likelihood-function" id="toc-log-likelihood-function" class="nav-link" data-scroll-target="#log-likelihood-function">Log Likelihood Function</a></li>
   <li><a href="#mle-estimation" id="toc-mle-estimation" class="nav-link" data-scroll-target="#mle-estimation">MLE Estimation</a></li>
   </ul></li>
   <li><a href="#estimation-via-bayesian-methods" id="toc-estimation-via-bayesian-methods" class="nav-link" data-scroll-target="#estimation-via-bayesian-methods">5. Estimation via Bayesian Methods</a>
@@ -277,7 +278,7 @@ Note
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="27355391" class="cell" data-message="false" data-execution_count="1">
+<div id="a39c21f9" class="cell" data-message="false" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -418,8 +419,7 @@ Note
 <section id="preparing-the-data-for-estimation" class="level2">
 <h2 class="anchored" data-anchor-id="preparing-the-data-for-estimation">3. Preparing the Data for Estimation</h2>
 <p>The “hard part” of the MNL likelihood function is organizing the data, as we need to keep track of 3 dimensions (consumer <span class="math inline">\(i\)</span>, covariate <span class="math inline">\(k\)</span>, and product <span class="math inline">\(j\)</span>) instead of the typical 2 dimensions for cross-sectional regression models (consumer <span class="math inline">\(i\)</span> and covariate <span class="math inline">\(k\)</span>). The fact that each task for each respondent has the same number of alternatives (3) helps. In addition, we need to convert the categorical variables for brand and ads into binary variables.</p>
-<p><em>todo: reshape and prep the data</em></p>
-<div id="1f4106a3" class="cell" data-execution_count="2">
+<div id="77e70821" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>conjoint_data <span class="op">=</span> pd.read_csv(<span class="st">"/home/jovyan/Desktop/Marketing Analytics HW/conjoint_data.csv"</span>)</span>
@@ -493,7 +493,7 @@ Note
 </div>
 </div>
 </div>
-<div id="22a67df0" class="cell" data-execution_count="3">
+<div id="c1581701" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>conjoint_data[<span class="st">'brand'</span>] <span class="op">=</span> conjoint_data[<span class="st">'brand'</span>].astype(<span class="st">'category'</span>).cat.codes</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>conjoint_data[<span class="st">'ad'</span>] <span class="op">=</span> conjoint_data[<span class="st">'ad'</span>].astype(<span class="st">'category'</span>).cat.codes</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -581,9 +581,9 @@ Note
 </section>
 <section id="estimation-via-maximum-likelihood" class="level2">
 <h2 class="anchored" data-anchor-id="estimation-via-maximum-likelihood">4. Estimation via Maximum Likelihood</h2>
-<p><em>todo: Code up the log-likelihood function.</em></p>
-<p><em>todo: Use <code>optim()</code> in R or <code>scipy.optimize()</code> in Python to find the MLEs for the 4 parameters (<span class="math inline">\(\beta_\text{netflix}\)</span>, <span class="math inline">\(\beta_\text{prime}\)</span>, <span class="math inline">\(\beta_\text{ads}\)</span>, <span class="math inline">\(\beta_\text{price}\)</span>), as well as their standard errors (from the Hessian). For each parameter construct a 95% confidence interval.</em> ### Log Likelihood Function</p>
-<div id="b220fecb" class="cell" data-execution_count="4">
+<section id="log-likelihood-function" class="level3">
+<h3 class="anchored" data-anchor-id="log-likelihood-function">Log Likelihood Function</h3>
+<div id="5cf4d405" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create dummy variables for brand (baseline: Hulu → brand=0)</span></span>
@@ -610,14 +610,15 @@ Note
 <span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>ll  <span class="co"># negative for minimization</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="135665b3" class="cell" data-execution_count="5">
+<div id="c866769f" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> conjoint_data[[<span class="st">'is_netflix'</span>, <span class="st">'is_prime'</span>, <span class="st">'ad'</span>, <span class="st">'price'</span>]].values</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> conjoint_data[<span class="st">'choice'</span>].values</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>groups <span class="op">=</span> conjoint_data[<span class="st">'resp_task'</span>].values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
 <section id="mle-estimation" class="level3">
 <h3 class="anchored" data-anchor-id="mle-estimation">MLE Estimation</h3>
-<div id="73ae4f99" class="cell" data-execution_count="6">
+<div id="a3b1c58a" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial guess</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>beta_init <span class="op">=</span> np.zeros(X.shape[<span class="dv">1</span>])</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -721,13 +722,9 @@ Desired error not necessarily achieved due to precision loss.
 </section>
 <section id="estimation-via-bayesian-methods" class="level2">
 <h2 class="anchored" data-anchor-id="estimation-via-bayesian-methods">5. Estimation via Bayesian Methods</h2>
-<p><em>todo: code up a metropolis-hasting MCMC sampler of the posterior distribution. Take 11,000 steps and throw away the first 1,000, retaining the subsequent 10,000.</em></p>
-<p><em>hint: Use N(0,5) priors for the betas on the binary variables, and a N(0,1) prior for the price beta.</em></p>
-<p>_hint: instead of calculating post=lik*prior, you can work in the log-space and calculate log-post = log-lik + log-prior (this should enable you to re-use your log-likelihood function from the MLE section just above)_</p>
-<p><em>hint: King Markov (in the video) use a candidate distribution of a coin flip to decide whether to move left or right among his islands. Unlike King Markov, we have 4 dimensions (because we have 4 betas) and our dimensions are continuous. So, use a multivariate normal distribution to pospose the next location for the algorithm to move to. I recommend a MNV(mu, Sigma) where mu=c(0,0,0,0) and sigma has diagonal values c(0.05, 0.05, 0.05, 0.005) and zeros on the off-diagonal. Since this MVN has no covariances, you can sample each dimension independently (so 4 univariate normals instead of 1 multivariate normal), where the first 3 univariate normals are N(0,0.05) and the last one if N(0,0.005).</em></p>
 <section id="metropolis-hasting-mcmc-sampler" class="level3">
 <h3 class="anchored" data-anchor-id="metropolis-hasting-mcmc-sampler">Metropolis-Hasting MCMC sampler</h3>
-<div id="f88032b8" class="cell" data-execution_count="7">
+<div id="d7459389" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reuse from previous step</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> conjoint_data[[<span class="st">'is_netflix'</span>, <span class="st">'is_prime'</span>, <span class="st">'ad'</span>, <span class="st">'price'</span>]].values</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> conjoint_data[<span class="st">'choice'</span>].values</span>
@@ -792,14 +789,14 @@ Step 9000 complete
 Step 10000 complete</code></pre>
 </div>
 </div>
-<div id="8b941390" class="cell" data-execution_count="8">
+<div id="77721888" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>param_names <span class="op">=</span> [<span class="st">'beta_netflix'</span>, <span class="st">'beta_prime'</span>, <span class="st">'beta_ads'</span>, <span class="st">'beta_price'</span>]</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Parameter'</span>: param_names,</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Posterior Mean'</span>: posterior_samples.mean(axis<span class="op">=</span><span class="dv">0</span>),</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Posterior SD'</span>: posterior_samples.std(axis<span class="op">=</span><span class="dv">0</span>),</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'5% CI'</span>: np.percentile(posterior_samples, <span class="dv">5</span>, axis<span class="op">=</span><span class="dv">0</span>),</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'95% CI'</span>: np.percentile(posterior_samples, <span class="dv">95</span>, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'2.5% CI'</span>: np.percentile(posterior_samples, <span class="dv">5</span>, axis<span class="op">=</span><span class="dv">0</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'97.5% CI'</span>: np.percentile(posterior_samples, <span class="dv">95</span>, axis<span class="op">=</span><span class="dv">0</span>)</span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>})</span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -814,8 +811,8 @@ Step 10000 complete</code></pre>
 <th data-quarto-table-cell-role="th">Parameter</th>
 <th data-quarto-table-cell-role="th">Posterior Mean</th>
 <th data-quarto-table-cell-role="th">Posterior SD</th>
-<th data-quarto-table-cell-role="th">5% CI</th>
-<th data-quarto-table-cell-role="th">95% CI</th>
+<th data-quarto-table-cell-role="th">2.5% CI</th>
+<th data-quarto-table-cell-role="th">97.5% CI</th>
 </tr>
 </thead>
 <tbody>
@@ -857,11 +854,10 @@ Step 10000 complete</code></pre>
 </div>
 </div>
 </div>
-<p><em>todo: for at least one of the 4 parameters, show the trace plot of the algorithm, as well as the histogram of the posterior distribution.</em></p>
 </section>
 <section id="trace-plots" class="level3">
 <h3 class="anchored" data-anchor-id="trace-plots">Trace Plots</h3>
-<div id="f8d7f0b3" class="cell" data-execution_count="9">
+<div id="6cdaae2e" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>param_idx <span class="op">=</span> <span class="dv">3</span>  <span class="co"># 0=netflix, 1=prime, 2=ads, 3=price</span></span>
@@ -894,11 +890,10 @@ Step 10000 complete</code></pre>
 </div>
 </div>
 </div>
-<p><em>todo: report the 4 posterior means, standard deviations, and 95% credible intervals and compare them to your results from the Maximum Likelihood approach.</em></p>
 </section>
 <section id="report" class="level3">
 <h3 class="anchored" data-anchor-id="report">Report</h3>
-<div id="a447765d" class="cell" data-execution_count="10">
+<div id="59a2e128" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div>
@@ -911,8 +906,8 @@ Step 10000 complete</code></pre>
 <th data-quarto-table-cell-role="th">Parameter</th>
 <th data-quarto-table-cell-role="th">Posterior Mean</th>
 <th data-quarto-table-cell-role="th">Posterior SD</th>
-<th data-quarto-table-cell-role="th">5% CI</th>
-<th data-quarto-table-cell-role="th">95% CI</th>
+<th data-quarto-table-cell-role="th">2.5% CI</th>
+<th data-quarto-table-cell-role="th">97.5% CI</th>
 </tr>
 </thead>
 <tbody>
@@ -961,8 +956,11 @@ Step 10000 complete</code></pre>
 </section>
 <section id="discussion" class="level2">
 <h2 class="anchored" data-anchor-id="discussion">6. Discussion</h2>
-<p><em>todo: Suppose you did not simulate the data. What do you observe about the parameter estimates? What does <span class="math inline">\(\beta_\text{Netflix} &gt; \beta_\text{Prime}\)</span> mean? Does it make sense that <span class="math inline">\(\beta_\text{price}\)</span> is negative?</em></p>
-<p><em>todo: At a high level, discuss what change you would need to make in order to simulate data from — and estimate the parameters of — a multi-level (aka random-parameter or hierarchical) model. This is the model we use to analyze “real world” conjoint data.</em></p>
+<p>If we did not simulate the data ourselves and instead received it from an external source, the parameter estimates would still provide meaningful insight into consumer preferences, assuming the data was well-designed and representative. The fact that <span class="math inline">\(\beta_{\text{Netflix}} &gt; \beta_{\text{Prime}}\)</span> suggests that, on average, consumers in this dataset have a stronger preference for Netflix over Prime Video, holding all other factors constant. This implies that Netflix offers something more attractive to respondents — perhaps content quality, familiarity, or brand loyalty — that drives higher utility compared to Prime.</p>
+<p>Additionally, the negative estimate for <span class="math inline">\(\beta_{\text{price}}\)</span> aligns with economic theory and common sense: as price increases, the utility of a streaming service option decreases, making it less likely to be chosen. This inverse relationship reflects consumers’ sensitivity to cost, and its statistical significance (particularly in the Bayesian credible interval) reinforces that price is a meaningful factor in decision-making. Overall, the direction and relative magnitudes of these coefficients appear to be reasonable and interpretable in the context of consumer choice.</p>
+<p>To simulate data from—and estimate parameters for—a multi-level (also known as random-parameter or hierarchical) model, we would need to introduce respondent-level heterogeneity into the utility function. Rather than assuming a single set of part-worth utilities (the <span class="math inline">\(\beta\)</span> coefficients) shared by all individuals, we would assume that each respondent has their own set of <span class="math inline">\(\beta_i\)</span> parameters. These individual-level coefficients would be drawn from a population-level distribution, typically a multivariate normal.</p>
+<p>In the simulation process, this means generating a different <span class="math inline">\(\boldsymbol{\beta}_i\)</span> vector for each respondent from the specified population distribution, and then using those to generate choices.</p>
+<p>On the estimation side, this adds complexity because we are now estimating both the individual-level parameters (<span class="math inline">\(\boldsymbol{\beta}_i\)</span>) and the population-level hyperparameters (<span class="math inline">\(\boldsymbol{\mu}\)</span>, <span class="math inline">\(\boldsymbol{\Sigma}\)</span>). This is usually done via Bayesian methods such as hierarchical MCMC, or via simulation-based maximum likelihood (e.g., using methods like hierarchical Bayes or mixed logit models with simulated integration). These models are more computationally intensive but more realistic, as they allow preferences to vary across individuals—just as they do in real-world choice data.</p>
 
 
 </section>
