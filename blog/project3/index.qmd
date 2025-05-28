@@ -277,7 +277,6 @@ def run_mcmc(initial, steps, burn_in=1000):
     log_post_curr = log_posterior(beta_curr, X, y, groups)
     
     for step in range(steps):
-        # Propose new beta from symmetric random walk
         proposal = beta_curr + np.array([
             np.random.normal(0, np.sqrt(0.05)),  # netflix
             np.random.normal(0, np.sqrt(0.05)),  # prime
@@ -297,9 +296,8 @@ def run_mcmc(initial, steps, burn_in=1000):
         if step % 1000 == 0:
             print(f"Step {step} complete")
     
-    return np.array(samples[burn_in:])  # discard burn-in
+    return np.array(samples[burn_in:])
 
-# Run sampler
 np.random.seed(123)
 initial_beta = np.zeros(4)
 posterior_samples = run_mcmc(initial_beta, steps=11000, burn_in=1000)
@@ -311,8 +309,8 @@ summary = pd.DataFrame({
     'Parameter': param_names,
     'Posterior Mean': posterior_samples.mean(axis=0),
     'Posterior SD': posterior_samples.std(axis=0),
-    '2.5% CI': np.percentile(posterior_samples, 2.5, axis=0),
-    '97.5% CI': np.percentile(posterior_samples, 97.5, axis=0)
+    '5% CI': np.percentile(posterior_samples, 5, axis=0),
+    '95% CI': np.percentile(posterior_samples, 95, axis=0)
 })
 
 summary
@@ -326,7 +324,6 @@ _todo: for at least one of the 4 parameters, show the trace plot of the algorith
 ```{python}
 import matplotlib.pyplot as plt
 
-# Index of beta_price in your parameter vector
 param_idx = 3  # 0=netflix, 1=prime, 2=ads, 3=price
 param_name = "beta_price"
 samples_price = posterior_samples[:, param_idx]
@@ -355,6 +352,7 @@ _todo: report the 4 posterior means, standard deviations, and 95% credible inter
 
 ### Report
 ```{python}
+#| echo: false
 summary
 ```
 
