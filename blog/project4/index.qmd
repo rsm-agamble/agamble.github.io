@@ -66,9 +66,6 @@ cluster_range = range(2, 8)
 wcss_custom = []
 silhouette_custom = []
 
-# Replace this with your actual dataset variable (e.g. X_penguins)
-# X_penguins should be a NumPy array with shape (n_samples, n_features)
-
 for k in cluster_range:
     centers = pick_initial_centroids(X_penguins, k)
 
