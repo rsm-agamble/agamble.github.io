@@ -25,7 +25,7 @@ penguins_filtered.head()
 ```
 
 ```{python}
-X_penguins = penguins_filtered.values()
+X_penguins = penguins_filtered.values
 ```
 
 ## 1b. Latent-Class MNL
