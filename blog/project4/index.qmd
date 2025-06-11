@@ -15,6 +15,8 @@ _todo: Calculate both the within-cluster-sum-of-squares and silhouette scores (y
 
 _If you want a challenge, add your plots as an animated gif on your website so that the result looks something like [this](https://www.youtube.com/shorts/XCsoWZU9oN8)._
 
+In this part of the analysis, I developed a K-Means clustering algorithm from the ground up and applied it to the Palmer Penguins dataset using two quantitative variables: bill_length_mm and flipper_length_mm. The custom algorithm follows the core K-Means steps: initializing centroids, assigning data points to clusters, updating centroids iteratively, and computing the within-cluster sum of squares (WCSS) to measure compactness. To assess clustering effectiveness across different values of 𝐾 (ranging from 2 to 7), I calculated both WCSS and silhouette scores for each case. For comparison, I also ran the built-in KMeans function from the scikit-learn library. The side-by-side results demonstrated consistent behavior between the two methods. Visual comparisons of the evaluation metrics helped pinpoint the most appropriate number of clusters and emphasized the usefulness of WCSS and silhouette scores in evaluating clustering quality.
+
 ```{python}
 import pandas as pd
 penguins = pd.read_csv("/home/jovyan/Desktop/Marketing Analytics HW/palmer_penguins.csv")
@@ -26,6 +28,114 @@ penguins_filtered.head()
 
 ```{python}
 X_penguins = penguins_filtered.values
+```
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import silhouette_score
+from sklearn.cluster import KMeans
+
+# =============================
+# Custom K-Means Implementation
+# =============================
+
+def pick_initial_centroids(data, n_clusters):
+    """Randomly choose k points as initial centroids."""
+    sample_idx = np.random.choice(len(data), n_clusters, replace=False)
+    return data[sample_idx]
+
+def cluster_assignment(data, centroids):
+    """Assign each point to the closest centroid."""
+    dists = np.linalg.norm(data[:, np.newaxis] - centroids, axis=2)
+    return np.argmin(dists, axis=1)
+
+def recompute_centroids(data, assignments, n_clusters):
+    """Update centroids as the mean of assigned points."""
+    return np.array([data[assignments == i].mean(axis=0) for i in range(n_clusters)])
+
+def total_within_ss(data, assignments, centroids):
+    """Compute WCSS (within-cluster sum of squares)."""
+    return sum(np.sum((data[assignments == i] - centroids[i])**2) for i in range(len(centroids)))
+
+# =====================
+# Experiment Parameters
+# =====================
+
+cluster_range = range(2, 8)
+wcss_custom = []
+silhouette_custom = []
+
+# Replace this with your actual dataset variable (e.g. X_penguins)
+# X_penguins should be a NumPy array with shape (n_samples, n_features)
+
+for k in cluster_range:
+    centers = pick_initial_centroids(X_penguins, k)
+
+    # Run K-Means loop
+    for iteration in range(10):
+        groups = cluster_assignment(X_penguins, centers)
+        centers = recompute_centroids(X_penguins, groups, k)
+
+    # Compute metrics
+    wcss_custom.append(total_within_ss(X_penguins, groups, centers))
+    silhouette = silhouette_score(X_penguins, groups) if len(set(groups)) > 1 else np.nan
+    silhouette_custom.append(silhouette)
+
+# ============================
+# Built-in KMeans for Comparison
+# ============================
+
+models_builtin = [
+    KMeans(n_clusters=k, n_init=10, random_state=0).fit(X_penguins)
+    for k in cluster_range
+]
+
+wcss_builtin = [model.inertia_ for model in models_builtin]
+silhouette_builtin = [silhouette_score(X_penguins, model.labels_) for model in models_builtin]
+
+# ============
+# Print Tables
+# ============
+
+print("Custom K-Means Results:")
+print("K\tWCSS\t\tSilhouette")
+for i, k in enumerate(cluster_range):
+    sil = f"{silhouette_custom[i]:.3f}" if not np.isnan(silhouette_custom[i]) else "NaN"
+    print(f"{k}\t{wcss_custom[i]:.2f}\t\t{sil}")
+
+print("\nSklearn KMeans Results:")
+print("K\tWCSS\t\tSilhouette")
+for i, k in enumerate(cluster_range):
+    print(f"{k}\t{wcss_builtin[i]:.2f}\t\t{silhouette_builtin[i]:.3f}")
+
+# ==============
+# Visualize Both
+# ==============
+
+plt.figure(figsize=(14, 6))
+
+# Plot WCSS
+plt.subplot(1, 2, 1)
+plt.plot(cluster_range, wcss_custom, 'o-', label='Custom')
+plt.plot(cluster_range, wcss_builtin, 'x--', label='sklearn')
+plt.title("WCSS vs K")
+plt.xlabel("Number of Clusters")
+plt.ylabel("WCSS")
+plt.legend()
+
+# Plot Silhouette Scores
+plt.subplot(1, 2, 2)
+plt.plot(cluster_range, silhouette_custom, 'o-', label='Custom')
+plt.plot(cluster_range, silhouette_builtin, 'x--', label='sklearn')
+plt.title("Silhouette Score vs K")
+plt.xlabel("Number of Clusters")
+plt.ylabel("Silhouette Score")
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
 ```
 
 ## 1b. Latent-Class MNL
