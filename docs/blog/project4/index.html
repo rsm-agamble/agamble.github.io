@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Your Name">
+<meta name="author" content="Alexa Gamble">
 <meta name="dcterms.date" content="2025-06-11">
 
-<title>Add Title – Alexa’s Website</title>
+<title>K-Means and K Nearest Neighbors – Alexa’s Website</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -165,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Add Title</h1>
+<h1 class="title">K-Means and K Nearest Neighbors</h1>
 </div>
 
 
@@ -175,7 +175,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Your Name </p>
+             <p>Alexa Gamble </p>
           </div>
   </div>
     
@@ -194,14 +194,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><em>todo: do two analyses. Do one of either 1a or 1b, AND one of either 2a or 2b.</em></p>
 <section id="a.-k-means" class="level2">
 <h2 class="anchored" data-anchor-id="a.-k-means">1a. K-Means</h2>
-<p><em>todo: write your own code to implement the k-means algorithm. Make plots of the various steps the algorithm takes so you can “see” the algorithm working. Test your algorithm on the Palmer Penguins dataset, specifically using the bill length and flipper length variables. Compare your results to the built-in <code>kmeans</code> function in R or Python.</em></p>
-<p><em>todo: Calculate both the within-cluster-sum-of-squares and silhouette scores (you can use built-in functions to do so) and plot the results for various numbers of clusters (ie, K=2,3,…,7). What is the “right” number of clusters as suggested by these two metrics?</em></p>
-<p><em>If you want a challenge, add your plots as an animated gif on your website so that the result looks something like <a href="https://www.youtube.com/shorts/XCsoWZU9oN8">this</a>.</em></p>
 <p>In this part of the analysis, I developed a K-Means clustering algorithm from the ground up and applied it to the Palmer Penguins dataset using two quantitative variables: bill_length_mm and flipper_length_mm. The custom algorithm follows the core K-Means steps: initializing centroids, assigning data points to clusters, updating centroids iteratively, and computing the within-cluster sum of squares (WCSS) to measure compactness. To assess clustering effectiveness across different values of 𝐾 (ranging from 2 to 7), I calculated both WCSS and silhouette scores for each case. For comparison, I also ran the built-in KMeans function from the scikit-learn library. The side-by-side results demonstrated consistent behavior between the two methods. Visual comparisons of the evaluation metrics helped pinpoint the most appropriate number of clusters and emphasized the usefulness of WCSS and silhouette scores in evaluating clustering quality.</p>
-<div id="3bd6c97e" class="cell" data-execution_count="1">
+<div id="c12fd1c5" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> pd.read_csv(<span class="st">"/home/jovyan/Desktop/Marketing Analytics HW/palmer_penguins.csv"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -251,10 +247,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="2a1b8c37" class="cell" data-execution_count="2">
+<div id="7327d3a7" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X_penguins <span class="op">=</span> penguins_filtered.values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="42f9c014" class="cell" data-execution_count="3">
+<div id="fd78774d" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> silhouette_score</span>
@@ -360,11 +356,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>Custom K-Means Results:
 K   WCSS        Silhouette
 2   20949.79        0.612
-3   13870.71        0.479
-4   11824.87        0.431
-5   7485.07     0.414
-6   8041.33     0.370
-7   5298.80     0.428
+3   13951.74        0.465
+4   11698.42        0.432
+5   10535.31        0.420
+6   6373.07     0.399
+7   8995.68     0.396
 
 Sklearn KMeans Results:
 K   WCSS        Silhouette
@@ -384,7 +380,7 @@ K   WCSS        Silhouette
 </div>
 </div>
 <p>While the silhouette score peaks at K=2, indicating the strongest cohesion and separation, this may oversimplify the natural structure of the data. Evaluating both WCSS and silhouette scores across K=2 to 7, <strong>K=3</strong> emerges as a strong candidate: it offers a more nuanced segmentation than two broad groups while still maintaining a relatively high silhouette score and showing a significant drop in WCSS. Given this balance between compactness and interpretability, K=3 appears to be a well-justified choice for the number of clusters.</p>
-<div id="8bf6b39f" class="cell" data-execution_count="4">
+<div id="e22f6681" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.animation <span class="im">import</span> FuncAnimation</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> HTML, display</span>
@@ -442,7 +438,7 @@ K   WCSS        Silhouette
 <section id="a.-k-nearest-neighbors" class="level2">
 <h2 class="anchored" data-anchor-id="a.-k-nearest-neighbors">2a. K Nearest Neighbors</h2>
 <p>To assess the performance of the k-nearest neighbors (KNN) algorithm, I created a synthetic dataset with two input variables, x1 and x2, and a binary target y, where the class label depends on whether x2 falls above or below a nonlinear boundary defined by sin(4x1) + x1. The training data was visualized with class-colored points, and the true decision boundary was plotted for reference. To evaluate generalization, a separate test set of 100 samples was generated using a different random seed to ensure no overlap with the training set. I built a custom implementation of KNN and confirmed its accuracy by comparing predictions to those produced by scikit-learn’s KNeighborsClassifier, which matched exactly for all values of k. Model accuracy was evaluated for k ranging from 1 to 30, and the proportion of correct classifications on the test set was recorded. Plotting accuracy against k revealed that the best performance was achieved at k=1, with a test accuracy of 95%. This result underscores the ability of small k values to closely follow complex, nonlinear boundaries in the data.</p>
-<div id="6d7836dc" class="cell" data-execution_count="5">
+<div id="b686fcfa" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>

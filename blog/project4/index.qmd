@@ -1,7 +1,7 @@
 ---
-title: "Add Title"
-author: "Your Name"
-date: today
+title: "K-Means and K Nearest Neighbors"
+author: "Alexa Gamble"
+date: 06/11/2025
 ---
 
 ## 1a. K-Means
