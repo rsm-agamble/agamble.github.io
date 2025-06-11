@@ -4,16 +4,7 @@ author: "Your Name"
 date: today
 ---
 
-_todo: do two analyses.  Do one of either 1a or 1b, AND one of either 2a or 2b._
-
-
 ## 1a. K-Means
-
-_todo: write your own code to implement the k-means algorithm.  Make plots of the various steps the algorithm takes so you can "see" the algorithm working.  Test your algorithm on the Palmer Penguins dataset, specifically using the bill length and flipper length variables.  Compare your results to the built-in `kmeans` function in R or Python._
-
-_todo: Calculate both the within-cluster-sum-of-squares and silhouette scores (you can use built-in functions to do so) and plot the results for various numbers of clusters (ie, K=2,3,...,7). What is the "right" number of clusters as suggested by these two metrics?_
-
-_If you want a challenge, add your plots as an animated gif on your website so that the result looks something like [this](https://www.youtube.com/shorts/XCsoWZU9oN8)._
 
 In this part of the analysis, I developed a K-Means clustering algorithm from the ground up and applied it to the Palmer Penguins dataset using two quantitative variables: bill_length_mm and flipper_length_mm. The custom algorithm follows the core K-Means steps: initializing centroids, assigning data points to clusters, updating centroids iteratively, and computing the within-cluster sum of squares (WCSS) to measure compactness. To assess clustering effectiveness across different values of 𝐾 (ranging from 2 to 7), I calculated both WCSS and silhouette scores for each case. For comparison, I also ran the built-in KMeans function from the scikit-learn library. The side-by-side results demonstrated consistent behavior between the two methods. Visual comparisons of the evaluation metrics helped pinpoint the most appropriate number of clusters and emphasized the usefulness of WCSS and silhouette scores in evaluating clustering quality.
 
